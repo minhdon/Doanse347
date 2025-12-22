@@ -1,0 +1,14 @@
+# This directory uses the parent .gitignore
+# Add any additional Backend/Backend specific ignores below if needed
+
+# Local settings
+local_settings.py
+settings_local.py
+
+# Database
+*.sqlite3
+
+# Environment
+.env
+
+

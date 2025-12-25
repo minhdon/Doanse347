@@ -1,19 +1,23 @@
 import React, { useState, useContext, useMemo, useEffect } from "react";
 import { useNavigate, createSearchParams, useSearchParams } from "react-router";
-import { useProductFetcher } from "..//CallApi/CallApi";
+import { useProductFetcher, type ApiData } from "../CallApi/CallApiProduct";
 
 import { SortContext } from "../useContext/priceSortContext";
 import { IndexContext } from "../useContext/IndexProductContext";
-import { paymentPerProductContext } from "../useContext/PaymentPerProduct";
+
 import styles from "./ProductList.module.css";
 
 const PRODUCTS_PER_PAGE = 8;
+
+interface CartItem extends ApiData {
+  quantity: number;
+}
 
 const DataFetcher: React.FC = () => {
   const { data, loading, error } = useProductFetcher();
   const sortContext = useContext(SortContext);
   const indexContext = useContext(IndexContext);
-  const paymentContext = useContext(paymentPerProductContext);
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -70,6 +74,20 @@ const DataFetcher: React.FC = () => {
     });
   };
 
+  const handleAddToCart = (item: ApiData) => {
+    const cartData = localStorage.getItem("shoppingCart");
+    const cartItems: CartItem[] = cartData ? JSON.parse(cartData) : [];
+    const existingItemIndex = cartItems.findIndex(
+      (cartItem) => String(cartItem.id) === String(item.id)
+    );
+    if (existingItemIndex < 0) {
+      const newItem: CartItem = { ...item, quantity: 1 };
+      cartItems.push(newItem);
+    }
+
+    localStorage.setItem("shoppingCart", JSON.stringify(cartItems));
+  };
+
   if (loading)
     return (
       <div>
@@ -98,7 +116,8 @@ const DataFetcher: React.FC = () => {
               className={styles.button}
               onClick={(e) => {
                 e.stopPropagation();
-                paymentContext.setPaymentProducts(item);
+
+                handleAddToCart(item);
               }}
             >
               Chọn mua

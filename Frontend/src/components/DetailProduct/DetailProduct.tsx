@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState, useContext } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./DetailProduct.module.css";
 import { useSearchParams } from "react-router";
-import { paymentPerProductContext } from "../useContext/PaymentPerProduct";
+
+import { type ApiData } from "../CallApi/CallApiProduct";
 interface Product {
   id: number;
   productName: string;
@@ -14,6 +15,10 @@ interface Product {
   wareHouseID: string;
   quantity: number;
   [key: string]: unknown;
+}
+
+interface CartItem extends ApiData {
+  quantity: number;
 }
 
 const StarIcon = () => (
@@ -71,8 +76,6 @@ const LightningIcon = () => (
 );
 
 const ProductDetail: React.FC = () => {
-  const paymentContext = useContext(paymentPerProductContext);
-
   const [quantity, setQuantity] = useState(1);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [search] = useSearchParams();
@@ -88,6 +91,19 @@ const ProductDetail: React.FC = () => {
     if (!allProducts || allProducts.length === 0) return null;
     return allProducts.find((item) => item.id == Number(productID));
   }, [allProducts, productID]);
+  const handleAddToCart = (item: ApiData) => {
+    const cartData = localStorage.getItem("shoppingCart");
+    const cartItems: CartItem[] = cartData ? JSON.parse(cartData) : [];
+    const existingItemIndex = cartItems.findIndex(
+      (cartItem) => String(cartItem.id) === String(item.id)
+    );
+    if (existingItemIndex < 0) {
+      const newItem: CartItem = { ...item, quantity: 1 };
+      cartItems.push(newItem);
+    }
+
+    localStorage.setItem("shoppingCart", JSON.stringify(cartItems));
+  };
 
   return (
     <div className={styles.hero}>
@@ -298,7 +314,7 @@ const ProductDetail: React.FC = () => {
               className={styles.btnBuy}
               onClick={() => {
                 if (selectedProduct) {
-                  paymentContext.setPaymentProducts(selectedProduct);
+                  handleAddToCart(selectedProduct);
                 }
               }}
             >

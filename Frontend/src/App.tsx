@@ -9,10 +9,12 @@ import ProductPage from "./pages/TSX/ProductPage";
 import { AnimatePresence } from "framer-motion";
 import ClickEffect from "./components/ClickEffect/ClickEffect";
 import DetailProductPage from "./pages/TSX/DetailProductPage";
-import PaymentPage from "./pages/TSX/PaymentPage";
+
 import ConfirmOtpPage from "./pages/TSX/ConfirmOtpPage";
 import ChangePassPage from "./pages/TSX/ChangePassPage";
 import MedicineChat from "./components/Chatbot/Chatbot";
+import ShoppingCartPage from "./pages/TSX/ShoppingCart";
+import PaymentPage from "./pages/TSX/PaymentPage";
 
 function App() {
   const location = useLocation();
@@ -31,7 +33,9 @@ function App() {
           ></Route>
           <Route path="/Product" element={<ProductPage />}></Route>
           <Route path="/DetailProduct" element={<DetailProductPage />}></Route>
+          <Route path="/ShoppingCart" element={<ShoppingCartPage />}></Route>
           <Route path="/Payment" element={<PaymentPage />}></Route>
+
           <Route path="/ConfirmOtp" element={<ConfirmOtpPage />}></Route>
           <Route path="/ChangePass" element={<ChangePassPage />}></Route>
           <Route path="/chat" element={<MedicineChat />}></Route>

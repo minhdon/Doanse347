@@ -4,16 +4,15 @@ import CustomerInfo from "../../components/ShoppingCart/CustomerInfo";
 
 import ShoppingCart from "../../components/ShoppingCart/ShoppingCart";
 
-
-function PaymentPage() {
+function ShoppingCartPage() {
   return (
     <>
       <Header />
       <ShoppingCart />
-      <CustomerInfo/>
+      <CustomerInfo />
       <Footer />
     </>
   );
 }
 
-export default PaymentPage;
+export default ShoppingCartPage;

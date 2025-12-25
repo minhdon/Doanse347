@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect } from "react";
 import styles from "../CSS/Header.module.css";
-import { paymentPerProductContext } from "../../useContext/PaymentPerProduct";
+
 import { useNavigate } from "react-router";
 import { createSearchParams } from "react-router";
 
@@ -20,9 +20,11 @@ export const Header = () => {
   const [isProductList, setIsProductList] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const lastScrollY = useRef(0);
-  const productContext = useContext(paymentPerProductContext);
+
   const productList = isProductList ? styles.active : "";
   const headerHidden = isHeaderHidden ? styles["header-hidden"] : "";
+  const data = localStorage.getItem("shoppingCart") || "[]";
+  const ProductList = JSON.parse(data);
 
   useEffect(() => {
     const tmp = localStorage.getItem("products");
@@ -97,9 +99,9 @@ export const Header = () => {
   const loginPageLink = () => {
     window.location.href = "/login";
   };
-  const toPayment = () => {
+  const toShoppingCart = () => {
     navigate({
-      pathname: "/Payment",
+      pathname: "/ShoppingCart",
     });
   };
 
@@ -178,12 +180,13 @@ export const Header = () => {
           <button className={styles["btnLogin-popup"]} onClick={loginPageLink}>
             Login
           </button>{" "}
-          <button className={styles["btnShoppingCart"]} onClick={toPayment}>
+          <button
+            className={styles["btnShoppingCart"]}
+            onClick={toShoppingCart}
+          >
             {" "}
             <i className="fa-solid fa-cart-shopping"></i> Giỏ hàng{" "}
-            <div className={styles.countProduct}>
-              {productContext.paymentProducts.length}
-            </div>
+            <div className={styles.countProduct}>{ProductList.length}</div>
           </button>
         </nav>
       </header>

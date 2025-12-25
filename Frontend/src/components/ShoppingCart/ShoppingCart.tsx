@@ -1,6 +1,7 @@
-import styles from "./Payment.module.css";
-import { useContext } from "react";
+import styles from "./ShoppingCart.module.css";
+import { useContext, useState } from "react";
 import { paymentPerProductContext } from "../useContext/PaymentPerProduct";
+import { IsInfoContext } from "../useContext/checkInfoContext";
 interface CartItem {
   id: number;
   productName: string;
@@ -53,37 +54,58 @@ const ChevronRight = () => (
   </svg>
 );
 
-const Payment: React.FC = () => {
+const ShoppingCart: React.FC = () => {
   // Dữ liệu giả lập
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const stored = localStorage.getItem("shoppingCart");
+    return stored ? JSON.parse(stored) : [];
+  });
+  const isInfoContext = useContext(IsInfoContext);
+  const handleChangeQuantity = (id: number, count: number) => {
+    const newItems = cartItems.map((item) => {
+      if (item.id === id && item.quantity + count >= 1) {
+        return { ...item, quantity: item.quantity + count };
+      }
+      return item;
+    });
+
+    // Cập nhật State (để UI đổi ngay lập tức)
+    setCartItems(newItems);
+
+    // Cập nhật LocalStorage (để lưu lại)
+    localStorage.setItem("shoppingCart", JSON.stringify(newItems));
+  };
 
   const products = useContext(paymentPerProductContext);
-  const totalAmount = products.paymentProducts.reduce((total, item) => {
-    return total + item.cost * item.quantity;
-  }, 0);
-  const removeItemByX = (valueA: number): CartItem[] => {
-    const STORAGE_KEY = "shoppingCart"; // Thay bằng key của bạn
 
-    try {
-      // Lấy dữ liệu
-      const storedString = localStorage.getItem(STORAGE_KEY);
-
-      if (storedString) {
-        const currentItems: CartItem[] = JSON.parse(storedString);
-
-        // Lọc bỏ các phần tử có x === valueA
-        const newItems = currentItems.filter((item) => item.id !== valueA);
-
-        // Lưu ngược lại vào Local Storage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newItems));
-
-        // Trả về mảng mới để bạn update State (quan trọng)
-        return newItems;
-      }
-    } catch (error) {
-      console.error("Lỗi parse JSON:", error);
+  // Tính tổng từ `cartItems`
+  const totalAmount: number = cartItems.reduce(
+    (sum: number, item: CartItem) => {
+      const cost = Number(item.cost) || 0;
+      const qty = Number(item.quantity) || 0;
+      return sum + cost * qty;
+    },
+    0
+  );
+  const handleCheckIsInfo = () => {
+    if (isInfoContext.isInfo === false) {
+      alert("Vui lòng điền đầy đủ thông tin người nhận hàng!");
+    
     }
+  };
 
-    return [];
+  const removeItemByX = (valueA: number): CartItem[] => {
+    const newItems = cartItems.filter((item) => item.id !== valueA);
+    // Cập nhật state và localStorage ngay lập tức
+    setCartItems(newItems);
+    try {
+      localStorage.setItem("shoppingCart", JSON.stringify(newItems));
+    } catch (e) {
+      console.error("Lỗi khi cập nhật localStorage:", e);
+    }
+    if (products && products.handleDeleteProduct)
+      products.handleDeleteProduct(valueA);
+    return newItems;
   };
   // Khi bấm nút xóa
 
@@ -117,7 +139,7 @@ const Payment: React.FC = () => {
           </div>
 
           {/* Product Item Row */}
-          {products.paymentProducts.map((item) => (
+          {cartItems.map((item: CartItem) => (
             <div key={item.id}>
               <div className={styles.cartItem}>
                 <div className={styles.colCheckbox}>
@@ -152,7 +174,7 @@ const Payment: React.FC = () => {
                   <div className={styles.qtyGroup}>
                     <button
                       className={styles.qtyBtn}
-                      onClick={() => products.handleDecreaseQuantity(item.id)}
+                      onClick={() => handleChangeQuantity(item.id, -1)}
                     >
                       -
                     </button>
@@ -164,7 +186,7 @@ const Payment: React.FC = () => {
                     />
                     <button
                       className={styles.qtyBtn}
-                      onClick={() => products.handleIncreaseQuantity(item.id)}
+                      onClick={() => handleChangeQuantity(item.id, 1)}
                     >
                       +
                     </button>
@@ -182,7 +204,6 @@ const Payment: React.FC = () => {
                   <button
                     className={styles.deleteBtn}
                     onClick={() => {
-                      products.handleDeleteProduct(item.id);
                       removeItemByX(item.id);
                     }}
                   >
@@ -226,11 +247,18 @@ const Payment: React.FC = () => {
             </div>
           </div>
 
-          <button className={styles.btnCheckout}>Mua hàng</button>
+          <button
+            className={styles.btnCheckout}
+            onClick={() => {
+             handleCheckIsInfo()
+            }}
+          >
+            Mua hàng
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default Payment;
+export default ShoppingCart;

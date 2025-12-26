@@ -1,13 +1,27 @@
 /* CheckoutForm.module.css */
 
 .container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  /* background: yellow; */
+  display: flex;
+  margin-top: 120px;
+  justify-content: flex-start;
+}
+
+.infoZone {
   max-width: 800px;
+  flex: 1;
+
   margin: 0 auto;
   padding: 20px;
   background-color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
   color: #333;
+
+  /* background: #000; */
 }
 
 /* --- Section Headers --- */
@@ -37,6 +51,203 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 16px;
+}
+
+.rightPanel {
+  width: 350px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  height: 300px;
+  margin-right: 10vh;
+}
+
+.couponBar {
+  background-color: #eef2fe;
+  color: #1d48ba;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #555;
+}
+
+.summaryVal {
+  font-weight: 500;
+  color: #333;
+}
+
+.summaryVal.discount {
+  color: #f39c12;
+}
+
+.divider {
+  border-top: 1px solid #eee;
+  margin: 15px 0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.totalLabel {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.totalPrice {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d48ba;
+}
+
+.oldTotal {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+  text-align: right;
+  display: block;
+}
+
+.btnCheckout {
+  width: 100%;
+  background-color: #1d48ba;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnCheckout:hover {
+  background-color: #153896;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #1d48ba;
+}
+
+/* --- Modal Popup --- */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu đen mờ làm nền */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Đảm bảo nằm trên cùng */
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: scaleUp 0.2s ease-in-out;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #d93025; /* Màu đỏ cảnh báo */
+  margin-bottom: 12px;
+}
+
+.modalMessage {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.modalButton {
+  background-color: #1d48ba;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modalButton:hover {
+  background-color: #153896;
+}
+
+/* Hiệu ứng chuyển động nhẹ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ... Các code cũ giữ nguyên ... */
+
+/* Thêm Class mới cho Label (Tiêu đề phía trên input) */
+.fieldLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 600; /* In đậm nhẹ */
+  margin-bottom: 8px; /* Cách ô input một chút cho thoáng */
+  color: #333;
+  text-align: left;
+}
+
+/* Class cho dấu sao màu đỏ */
+.requiredStar {
+  color: #d93025; /* Màu đỏ */
+  margin-left: 4px;
+}
+
+/* Điều chỉnh lại .field để layout đẹp hơn khi có label */
+.field {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Căn lề trên */
 }
 
 /* Responsive: stack on small screens */

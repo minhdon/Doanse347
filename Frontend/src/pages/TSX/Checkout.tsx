@@ -1,17 +1,14 @@
+import Checkout from "../../components/Checkout/Checkout";
 import { Footer } from "../../components/HeaderFooter/TSX/Footer";
 import { Header } from "../../components/HeaderFooter/TSX/Header";
 
-import ShoppingCart from "../../components/ShoppingCart/ShoppingCart";
-
-function ShoppingCartPage() {
+function CheckoutPage() {
   return (
     <>
       <Header />
-      <ShoppingCart />
-
+      <Checkout />
       <Footer />
     </>
   );
 }
-
-export default ShoppingCartPage;
+export default CheckoutPage;

@@ -1,0 +1,258 @@
+/* PaymentPage.module.css */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  margin-top: 15vh;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* Cột bên trái: Thông tin đơn hàng */
+.orderInfo {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  color: #666;
+  font-weight: 600;
+}
+
+.totalRow td {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #e74c3c;
+  border-top: 2px solid #ddd;
+}
+
+/* Đồng hồ đếm ngược */
+.timerBox {
+  background: #fff3cd;
+  color: #856404;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ffeeba;
+  font-weight: bold;
+}
+
+.timer {
+  font-size: 1.5rem;
+  display: block;
+  margin-top: 0.5rem;
+  color: #d35400;
+}
+
+/* Cột bên phải: Phương thức thanh toán */
+.paymentSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tabs {
+  display: flex;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: #f1f1f1;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.tabButton:hover {
+  background: #e2e2e2;
+}
+
+.active {
+  background: #007bff;
+  color: white;
+}
+
+.active:hover {
+  background: #0056b3;
+}
+
+/* Khu vực hiển thị QR */
+.qrContainer {
+  background: white;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.qrImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.instruction {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5;
+}
+.isPayment {
+  margin-top: 1.5rem;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+}
+.isPayment button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Nền tối mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Đảm bảo nằm trên cùng */
+  backdrop-filter: blur(2px); /* Hiệu ứng mờ nhẹ background phía sau */
+}
+
+.modalContent {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  animation: popup 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Hiệu ứng nảy */
+}
+
+.successIcon {
+  width: 60px;
+  height: 60px;
+  background-color: #28a745;
+  color: white;
+  border-radius: 50%;
+  font-size: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem auto;
+}
+
+.modalContent h2 {
+  color: #28a745;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.modalContent p {
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.redirectText {
+  font-size: 0.9rem;
+  color: #888 !important;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+/* Keyframes cho hiệu ứng nảy popup */
+@keyframes popup {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loader {
+  border: 3px solid rgba(255, 255, 255, 0.3); /* Viền mờ */
+  border-top: 3px solid #ffffff; /* Viền sáng xoay */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto; /* Căn giữa button */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Keyframes cho hiệu ứng xoay */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Style bổ sung khi nút đang xử lý (tuỳ chọn) */
+.processingBtn {
+  cursor: not-allowed;
+  opacity: 0.8;
+  min-width: 140px; /* Giữ độ rộng nút không bị co lại khi hiện loader */
+}
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

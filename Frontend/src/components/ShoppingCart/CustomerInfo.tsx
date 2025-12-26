@@ -6,6 +6,17 @@ import {
   type Province,
 } from "../CallApi/CallApiLocation";
 
+interface CartItem {
+  id: number;
+  productName: string;
+  cost: number;
+  status: boolean;
+  img: string;
+  productDesc: string;
+  quantity: number;
+  [key: string]: unknown;
+}
+
 // ... (Giữ nguyên phần SVG Icon cũ) ...
 const UserIcon = () => (
   <svg
@@ -28,6 +39,18 @@ const MapMarkerIcon = () => (
     <path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 29.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z" />
   </svg>
 );
+const ChevronRight = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M9 18l6-6-6-6" />
+  </svg>
+);
 
 const CustomerInfo: React.FC = () => {
   // --- 1. State quản lý dữ liệu ---
@@ -43,6 +66,7 @@ const CustomerInfo: React.FC = () => {
   const [wardCode, setWardCode] = useState(""); // Thêm state Ward
   const [specificAddress, setSpecificAddress] = useState(""); // Thêm state Address
   const [note, setNote] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   // UI State
   const [isValueOfProvinceSelected, setIsValueOfProvinceSelected] =
@@ -55,12 +79,17 @@ const CustomerInfo: React.FC = () => {
   const [emailError, setEmailError] = useState("");
 
   const rawData = localStorage.getItem("Location") || "[]";
-  const { setIsInfo } = useContext(IsInfoContext);
+  const { isInfo, setIsInfo } = useContext(IsInfoContext);
   const locationData = JSON.parse(rawData);
 
   // Regex
   const phoneRegex = /^(?:\+84|0)\d{8,10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const [cartItems] = useState<CartItem[]>(() => {
+    const stored = localStorage.getItem("shoppingCart");
+    return stored ? JSON.parse(stored) : [];
+  });
 
   useEffect(() => {
     syncProvincesToStorage();
@@ -90,7 +119,7 @@ const CustomerInfo: React.FC = () => {
     if (hasSenderInfo && hasRecipientInfo && hasLocation && isEmailValid) {
       setIsInfo(true);
     } else {
-     setIsInfo(false);
+      setIsInfo(false);
     }
   }, [
     senderName,
@@ -105,10 +134,19 @@ const CustomerInfo: React.FC = () => {
     specificAddress,
     senderEmail,
     emailError,
-    setIsInfo
+    setIsInfo,
   ]);
 
   // --- Helper Functions ---
+
+  const totalAmount: number = cartItems.reduce(
+    (sum: number, item: CartItem) => {
+      const cost = Number(item.cost) || 0;
+      const qty = Number(item.quantity) || 0;
+      return sum + cost * qty;
+    },
+    0
+  );
 
   const validateSenderPhone = (value: string) => {
     if (value.trim() === "") {
@@ -153,182 +191,272 @@ const CustomerInfo: React.FC = () => {
     setWardCode(""); // Reset ward khi đổi quận
     setIsDistrictSelected(value !== "");
   };
+  const handleCheckIsInfo = () => {
+    if (isInfo == false) {
+      setShowErrorModal(true);
+    } else {
+      window.location.href = "/checkout";
+    }
+  };
+
+  const closeErrorModal = () => {
+    setShowErrorModal(false);
+  };
 
   return (
-    <div className={styles.container}>
-      {/* --- PHẦN 1: THÔNG TIN NGƯỜI ĐẶT --- */}
-      <div className={styles.formGroup}>
-        <div className={styles.sectionHeader}>
-          <UserIcon />
-          <span>Thông tin người đặt</span>
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.field}>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="Họ và tên người đặt"
-              value={senderName}
-              onChange={(e) => setSenderName(e.target.value)}
-            />
+    <section className={styles.container}>
+      <div className={styles.infoZone}>
+        {/* --- PHẦN 1: THÔNG TIN NGƯỜI ĐẶT --- */}
+        <div className={styles.formGroup}>
+          <div className={styles.sectionHeader}>
+            <UserIcon />
+            <span>Thông tin người đặt</span>
           </div>
 
-          <div className={styles.field}>
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.fieldLabel}>
+                <span className={styles.requiredStar}>*</span>
+              </label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Họ và tên người đặt"
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label className={styles.fieldLabel}>
+                <span className={styles.requiredStar}>*</span>
+              </label>
+              <input
+                type="tel"
+                className={styles.input}
+                placeholder="Số điện thoại"
+                value={senderPhone}
+                onBlur={(e) => validateSenderPhone(e.target.value)}
+                onChange={(e) => {
+                  setSenderPhone(e.target.value);
+                  if (senderPhoneError) setSenderPhoneError("");
+                }}
+              />
+              {senderPhoneError && (
+                <div className={styles.error}>{senderPhoneError}</div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.fullWidth}>
             <input
-              type="tel"
+              type="email"
               className={styles.input}
-              placeholder="Số điện thoại"
-              value={senderPhone}
-              onBlur={(e) => validateSenderPhone(e.target.value)}
+              placeholder="Email (không bắt buộc)"
+              value={senderEmail}
+              onBlur={(e) => validateEmail(e.target.value)}
               onChange={(e) => {
-                setSenderPhone(e.target.value);
-                if (senderPhoneError) setSenderPhoneError("");
+                setSenderEmail(e.target.value);
+                if (emailError) setEmailError("");
               }}
             />
-            {senderPhoneError && (
-              <div className={styles.error}>{senderPhoneError}</div>
-            )}
+            {emailError && <div className={styles.error}>{emailError}</div>}
           </div>
         </div>
 
-        <div className={styles.fullWidth}>
-          <input
-            type="email"
-            className={styles.input}
-            placeholder="Email (không bắt buộc)"
-            value={senderEmail}
-            onBlur={(e) => validateEmail(e.target.value)}
-            onChange={(e) => {
-              setSenderEmail(e.target.value);
-              if (emailError) setEmailError("");
-            }}
-          />
-          {emailError && <div className={styles.error}>{emailError}</div>}
-        </div>
-      </div>
-
-      {/* --- PHẦN 2: ĐỊA CHỈ NHẬN HÀNG --- */}
-      <div className={styles.formGroup}>
-        <div className={styles.sectionHeader}>
-          <MapMarkerIcon />
-          <span>Địa chỉ nhận hàng</span>
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.field}>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="Họ và tên người nhận"
-              value={recipientName}
-              onChange={(e) => setRecipientName(e.target.value)}
-            />
+        {/* --- PHẦN 2: ĐỊA CHỈ NHẬN HÀNG --- */}
+        <div className={styles.formGroup}>
+          <div className={styles.sectionHeader}>
+            <MapMarkerIcon />
+            <span>Địa chỉ nhận hàng</span>
           </div>
 
-          <div className={styles.field}>
-            <input
-              type="tel"
-              className={styles.input}
-              placeholder="Số điện thoại"
-              value={recipientPhone}
-              onBlur={(e) => validateRecipientPhone(e.target.value)}
-              onChange={(e) => {
-                setRecipientPhone(e.target.value);
-                if (recipientPhoneError) setRecipientPhoneError("");
-              }}
-            />
-            {recipientPhoneError && (
-              <div className={styles.error}>{recipientPhoneError}</div>
-            )}
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.fieldLabel}>
+                <span className={styles.requiredStar}>*</span>
+              </label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Họ và tên người nhận"
+                value={recipientName}
+                onChange={(e) => setRecipientName(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label className={styles.fieldLabel}>
+                <span className={styles.requiredStar}>*</span>
+              </label>
+              <input
+                type="tel"
+                className={styles.input}
+                placeholder="Số điện thoại"
+                value={recipientPhone}
+                onBlur={(e) => validateRecipientPhone(e.target.value)}
+                onChange={(e) => {
+                  setRecipientPhone(e.target.value);
+                  if (recipientPhoneError) setRecipientPhoneError("");
+                }}
+              />
+              {recipientPhoneError && (
+                <div className={styles.error}>{recipientPhoneError}</div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Dropdowns */}
-        <div className={styles.row}>
-          <select
-            className={styles.select}
-            value={provinceCode}
-            onChange={handleProvinceChange}
-          >
-            <option value="">Chọn Tỉnh/Thành phố</option>
-            {locationData.map((province: Province) => (
-              <option key={province.code} value={province.code}>
-                {province.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className={`${styles.select} ${styles.selectHidden}`}
-            value={districtCode}
-            disabled={!isValueOfProvinceSelected}
-            onChange={handleDistrictChange}
-          >
-            <option value="">Chọn Quận/Huyện</option>
-            {locationData.map((province: Province) => {
-              if (province.code.toString() === provinceCode) {
-                return province.districts.map((district) => (
-                  <option key={district.code} value={district.code}>
-                    {district.name}
+          {/* Dropdowns */}
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.fieldLabel}>
+                <span className={styles.requiredStar}>*</span>
+              </label>
+              <select
+                className={styles.select}
+                value={provinceCode}
+                onChange={handleProvinceChange}
+              >
+                <option value="">Chọn Tỉnh/Thành phố</option>
+                {locationData.map((province: Province) => (
+                  <option key={province.code} value={province.code}>
+                    {province.name}
                   </option>
-                ));
-              }
-              return null;
-            })}
-          </select>
-        </div>
+                ))}
+              </select>
+            </div>
 
-        <div className={styles.fullWidth}>
-          <select
-            className={`${styles.select} ${styles.selectHidden}`}
-            value={wardCode}
-            disabled={!isDistrictSelected}
-            onChange={(e) => setWardCode(e.target.value)}
-          >
-            <option value="">Chọn Phường/Xã</option>
-            {locationData.map((province: Province) => {
-              if (province.code.toString() === provinceCode) {
-                return province.districts.map((district) => {
-                  if (district.code.toString() === districtCode) {
-                    return district.wards.map((ward) => (
-                      <option key={ward.code} value={ward.code}>
-                        {ward.name}
+            <div className={styles.field}>
+              <label className={styles.fieldLabel}>
+                <span className={styles.requiredStar}>*</span>
+              </label>
+              <select
+                className={`${styles.select} ${styles.selectHidden}`}
+                value={districtCode}
+                disabled={!isValueOfProvinceSelected}
+                onChange={handleDistrictChange}
+              >
+                <option value="">Chọn Quận/Huyện</option>
+                {locationData.map((province: Province) => {
+                  if (province.code.toString() === provinceCode) {
+                    return province.districts.map((district) => (
+                      <option key={district.code} value={district.code}>
+                        {district.name}
                       </option>
                     ));
                   }
                   return null;
-                });
-              }
-              return null;
-            })}
-          </select>
+                })}
+              </select>
+            </div>
+          </div>
+
+          <div className={styles.fullWidth}>
+            <label className={styles.fieldLabel}>
+              <span className={styles.requiredStar}>*</span>
+            </label>
+            <select
+              className={`${styles.select} ${styles.selectHidden}`}
+              value={wardCode}
+              disabled={!isDistrictSelected}
+              onChange={(e) => setWardCode(e.target.value)}
+            >
+              <option value="">Chọn Phường/Xã</option>
+              {locationData.map((province: Province) => {
+                if (province.code.toString() === provinceCode) {
+                  return province.districts.map((district) => {
+                    if (district.code.toString() === districtCode) {
+                      return district.wards.map((ward) => (
+                        <option key={ward.code} value={ward.code}>
+                          {ward.name}
+                        </option>
+                      ));
+                    }
+                    return null;
+                  });
+                }
+                return null;
+              })}
+            </select>
+          </div>
+
+          {/* Địa chỉ cụ thể */}
+          <div className={styles.fullWidth}>
+            <label className={styles.fieldLabel}>
+              <span className={styles.requiredStar}>*</span>
+            </label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Nhập địa chỉ cụ thể"
+              value={specificAddress}
+              onChange={(e) => setSpecificAddress(e.target.value)}
+            />
+          </div>
+
+          {/* Ghi chú */}
+          <div className={styles.fullWidth}>
+            <textarea
+              className={styles.textarea}
+              placeholder="Ghi chú (không bắt buộc)&#10;Ví dụ: Hãy gọi cho tôi 15 phút trước khi giao"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            ></textarea>
+          </div>
         </div>
 
-        {/* Địa chỉ cụ thể */}
-        <div className={styles.fullWidth}>
-          <input
-            type="text"
-            className={styles.input}
-            placeholder="Nhập địa chỉ cụ thể"
-            value={specificAddress}
-            onChange={(e) => setSpecificAddress(e.target.value)}
-          />
-        </div>
-
-        {/* Ghi chú */}
-        <div className={styles.fullWidth}>
-          <textarea
-            className={styles.textarea}
-            placeholder="Ghi chú (không bắt buộc)&#10;Ví dụ: Hãy gọi cho tôi 15 phút trước khi giao"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-          ></textarea>
-        </div>
+        {/* --- FOOTER: HÓA ĐƠN ĐIỆN TỬ --- */}
       </div>
 
-      {/* --- FOOTER: HÓA ĐƠN ĐIỆN TỬ --- */}
-    </div>
+      <div className={styles.rightPanel}>
+        <div className={styles.couponBar}>
+          <span>Áp dụng ưu đãi để được giảm giá</span>
+          <ChevronRight />
+        </div>
+
+        <div className={styles.summaryRow}>
+          <span>Tổng tiền</span>
+          <span className={styles.summaryVal}>
+            {totalAmount.toLocaleString("vi-VN")}đ
+          </span>
+        </div>
+
+        <div className={styles.divider}></div>
+
+        <div className={styles.totalRow}>
+          <span className={styles.totalLabel}>Thành tiền</span>
+          <div style={{ textAlign: "right" }}>
+            <span className={styles.totalPrice}>
+              {totalAmount.toLocaleString("vi-VN")}đ
+            </span>
+          </div>
+        </div>
+
+        <button className={styles.btnCheckout} onClick={handleCheckIsInfo}>
+          Xác nhận
+        </button>
+      </div>
+
+      {showErrorModal && (
+        <div className={styles.modalOverlay} onClick={closeErrorModal}>
+          <div
+            className={styles.modalContent}
+            onClick={(e) =>
+              e.stopPropagation()
+            } /* Ngăn click vào hộp thoại bị đóng modal */
+          >
+            <div className={styles.modalTitle}>Thông báo</div>
+            <div className={styles.modalMessage}>
+              Vui lòng điền đầy đủ và chính xác các thông tin bắt buộc trước khi
+              thanh toán.
+            </div>
+            <button className={styles.modalButton} onClick={closeErrorModal}>
+              Đã hiểu
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
   );
 };
 

@@ -16,6 +16,8 @@ import MedicineChat from "./components/Chatbot/Chatbot";
 import ShoppingCartPage from "./pages/TSX/ShoppingCart";
 import PaymentPage from "./pages/TSX/PaymentPage";
 
+import CheckoutPage from "./pages/TSX/Checkout";
+
 function App() {
   const location = useLocation();
   return (
@@ -39,6 +41,7 @@ function App() {
           <Route path="/ConfirmOtp" element={<ConfirmOtpPage />}></Route>
           <Route path="/ChangePass" element={<ChangePassPage />}></Route>
           <Route path="/chat" element={<MedicineChat />}></Route>
+          <Route path="/checkout" element={<CheckoutPage />}></Route>
         </Routes>
       </AnimatePresence>
     </>

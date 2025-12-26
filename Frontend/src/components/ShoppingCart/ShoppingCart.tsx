@@ -1,7 +1,7 @@
 import styles from "./ShoppingCart.module.css";
 import { useContext, useState } from "react";
 import { paymentPerProductContext } from "../useContext/PaymentPerProduct";
-import { IsInfoContext } from "../useContext/checkInfoContext";
+
 interface CartItem {
   id: number;
   productName: string;
@@ -60,7 +60,7 @@ const ShoppingCart: React.FC = () => {
     const stored = localStorage.getItem("shoppingCart");
     return stored ? JSON.parse(stored) : [];
   });
-  const isInfoContext = useContext(IsInfoContext);
+
   const handleChangeQuantity = (id: number, count: number) => {
     const newItems = cartItems.map((item) => {
       if (item.id === id && item.quantity + count >= 1) {
@@ -87,12 +87,6 @@ const ShoppingCart: React.FC = () => {
     },
     0
   );
-  const handleCheckIsInfo = () => {
-    if (isInfoContext.isInfo === false) {
-      alert("Vui lòng điền đầy đủ thông tin người nhận hàng!");
-    
-    }
-  };
 
   const removeItemByX = (valueA: number): CartItem[] => {
     const newItems = cartItems.filter((item) => item.id !== valueA);
@@ -250,7 +244,7 @@ const ShoppingCart: React.FC = () => {
           <button
             className={styles.btnCheckout}
             onClick={() => {
-             handleCheckIsInfo()
+              window.location.href = "/payment";
             }}
           >
             Mua hàng

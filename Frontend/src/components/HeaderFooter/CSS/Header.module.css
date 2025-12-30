@@ -217,6 +217,21 @@ header {
 .description .cost {
   font-weight: bold;
 }
+.customerIcon {
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1.5rem;
+  color: #2b9474;
+  margin-left: 20px;
+  cursor: pointer;
+}
+.customerIcon:hover {
+  background: #2b9474;
+  color: #fff;
+}
 
 @media (max-width: 768px) {
   header {
@@ -232,7 +247,7 @@ header {
     margin-bottom: 10px;
     justify-content: center;
   }
-  
+
   .navigation a {
     margin-left: 10px;
     font-size: 1rem;
@@ -243,14 +258,14 @@ header {
     margin-left: 0;
     margin-top: 10px;
   }
-  
+
   .navigation .btnLogin-popup,
   .navigation .btnShoppingCart {
     width: 100px;
     margin-left: 10px;
     font-size: 0.9em;
   }
-  
+
   .list-product {
     left: 5%;
     width: 90%;

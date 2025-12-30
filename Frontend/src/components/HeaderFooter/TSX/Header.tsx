@@ -188,6 +188,12 @@ export const Header = () => {
             <i className="fa-solid fa-cart-shopping"></i> Giỏ hàng{" "}
             <div className={styles.countProduct}>{ProductList.length}</div>
           </button>
+          <button
+            className={styles.customerIcon}
+            onClick={() => (window.location.href = "/customer")}
+          >
+            <i className="fa-regular fa-user"></i>
+          </button>
         </nav>
       </header>
     </>

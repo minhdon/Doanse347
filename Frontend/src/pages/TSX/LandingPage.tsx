@@ -1,24 +1,25 @@
 import React from "react";
 import { Header } from "../../components/HeaderFooter/TSX/Header";
-import { Hero } from "../../components/LandingPage/TSX/Hero";
-import { About } from "../../components/LandingPage/TSX/About";
-import { Choice } from "../../components/LandingPage/TSX/Choice";
-import { WhyChoice } from "../../components/LandingPage/TSX/whyChoice";
-import { Certification } from "../../components/LandingPage/TSX/Certification";
-import { Feedback } from "../../components/LandingPage/TSX/Feedback";
+
 import { Footer } from "../../components/HeaderFooter/TSX/Footer";
 import { PageContainer } from "../../components/Animation/PageContainer";
+import HeroSection from "../../components/LandingPage/HeroSection/HeroSection";
+import CommitmentSection from "../../components/LandingPage/CommitmentSection/CommitmentSection";
+import ActivitiesSection from "../../components/LandingPage/ActivitiesSection/ActivitiesSection";
+import CertificationSection from "../../components/LandingPage/CertificationSection/CertificationSection";
+import FeedbackSection from "../../components/LandingPage/FeedbackSection/FeedbackSection";
+import ProductsSection from "../../components/LandingPage/ProductsSection/ProductsSection";
 function LandingPage() {
   return (
     <>
       <Header />
       <PageContainer>
-        <Hero />
-        <About />
-        <Choice />
-        <WhyChoice />
-        <Certification />
-        <Feedback />
+        <HeroSection />
+        <ProductsSection />
+        <CommitmentSection />
+        <ActivitiesSection />
+        <CertificationSection />
+        <FeedbackSection />
       </PageContainer>
       <Footer />
     </>

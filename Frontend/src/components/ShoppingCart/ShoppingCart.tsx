@@ -1,5 +1,5 @@
 import styles from "./ShoppingCart.module.css";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { paymentPerProductContext } from "../useContext/PaymentPerProduct";
 
 interface CartItem {
@@ -60,6 +60,8 @@ const ShoppingCart: React.FC = () => {
     const stored = localStorage.getItem("shoppingCart");
     return stored ? JSON.parse(stored) : [];
   });
+  const [isProduct, setIsProduct] = useState<boolean>(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const handleChangeQuantity = (id: number, count: number) => {
     const newItems = cartItems.map((item) => {
@@ -102,6 +104,24 @@ const ShoppingCart: React.FC = () => {
     return newItems;
   };
   // Khi bấm nút xóa
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      setIsProduct(false);
+    } else {
+      setIsProduct(true);
+    }
+  }, [cartItems]);
+  const handleCheckIsInfo = () => {
+    if (isProduct == false) {
+      setShowErrorModal(true);
+    } else {
+      window.location.href = "/payment";
+    }
+  };
+
+  const closeErrorModal = () => {
+    setShowErrorModal(false);
+  };
 
   return (
     <div className={styles.hero}>
@@ -241,16 +261,30 @@ const ShoppingCart: React.FC = () => {
             </div>
           </div>
 
-          <button
-            className={styles.btnCheckout}
-            onClick={() => {
-              window.location.href = "/payment";
-            }}
-          >
+          <button className={styles.btnCheckout} onClick={handleCheckIsInfo}>
             Mua hàng
           </button>
         </div>
       </div>
+      {showErrorModal && (
+        <div className={styles.modalOverlay} onClick={closeErrorModal}>
+          <div
+            className={styles.modalContent}
+            onClick={(e) =>
+              e.stopPropagation()
+            } /* Ngăn click vào hộp thoại bị đóng modal */
+          >
+            <div className={styles.modalTitle}>Thông báo</div>
+            <div className={styles.modalMessage}>
+              Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm vào giỏ hàng
+              trước khi thanh toán.
+            </div>
+            <button className={styles.modalButton} onClick={closeErrorModal}>
+              Đã hiểu
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

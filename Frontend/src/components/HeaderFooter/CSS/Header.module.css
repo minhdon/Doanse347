@@ -1,18 +1,32 @@
 header {
   position: fixed;
+
   top: 0;
+
   left: 0;
+
   width: 100%;
+
   height: 100px;
+
   padding: 20px 100px;
+
   /* background: transparent; */
+
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   z-index: 99;
+
   background: #ffffff;
+
   border-bottom: 2px solid #ccc;
+
   border-radius: 10px;
+
   transition: 0.5s;
 }
 
@@ -22,90 +36,151 @@ header {
 
 .logo {
   position: absolute;
+
   width: 100px;
+
   height: 100px;
+
   left: 5%;
+
   display: flex;
+
   cursor: pointer;
+
   /* align-items: flex-start; */
 }
+
 .logo img {
   width: 100%;
+
   filter: brightness(0.5);
 }
+.navigation {
+  display: flex;
+  align-items: center; /* Căn giữa dọc các phần tử con */
+}
+
 .navigation a {
   position: relative;
+
   font-size: 1.5rem;
+
   color: #2b9474;
+
   text-decoration: none;
+
   font-weight: bold;
+
   margin-left: 40px;
 }
+
 .navigation a::after {
   content: "";
+
   position: absolute;
+
   left: 0;
+
   width: 100%;
+
   height: 3px;
+
   background: #4bdaaf;
+
   border-radius: 5px;
+
   bottom: -6px;
+
   transform-origin: right;
+
   /*transform dung de thay doi hinh dang vi tri goc quay cua phan tu */
+
   transform: scaleX(0);
+
   transition: transform 0.5s;
 }
+
 .navigation a:hover::after {
   transform-origin: left;
+
   transform: scaleX(1);
 }
 
 .navigation .product:hover i {
   transform: rotateX(180deg);
+
   transition: 0.5s;
 }
+
 .list-product {
   position: absolute;
-  left: 27vw;
+
+  left: 25vw;
+  top: 80px;
+
   margin-top: 10px;
+
   height: 250px;
+
   width: 400px;
+
   border: 1px solid #2b9474;
+
   border-radius: 10px;
+
   background: #fff;
+
   display: flex;
+
   flex-direction: column;
+
   justify-content: center;
+
   align-items: center;
+
   transform: scaleX(0);
 }
+
 .list-product.active {
   transform: scaleX(1);
+
   transition: 0.5s;
 }
+
 .list-product a {
   margin: 0;
+
   padding: 10px 0 10px 0;
+
   font-size: 1.5rem;
+
   font-weight: normal;
 }
+
 .list-product a:hover {
   text-decoration: underline;
 }
+
 .list-product a:hover::after {
   transform: scaleX(0);
+
   text-decoration: underline;
 }
 
 .navigation .find-product {
   height: 50px;
-  width: 500px;
-  margin-left: 40px;
+
+  width: 100%;
+
   border-radius: 30px;
+
   border: 2px solid black;
+
   font-size: 1.2rem;
+
   padding-left: 30px;
 }
+
 .navigation .find-product::placeholder {
   font-size: 1.2rem;
 }
@@ -116,159 +191,266 @@ header {
 
 .navigation .btnLogin-popup {
   width: 130px;
+
   height: 50px;
+
   background: transparent;
+
   border: 2px solid #ccc;
+
   /* outline:đường viền bao quanh phần tử */
+
   outline: none;
+
   border-radius: 6px;
+
   font-size: 1.1em;
+
   font-weight: bold;
+
   margin-left: 40px;
+
   transition: 0.5s;
+
   color: #2b9474;
+
   cursor: pointer;
+
   position: relative;
 }
 
 .navigation .btnLogin-popup:hover {
   background: #2b9474;
+
   color: #fff;
 }
 
 .navigation .btnShoppingCart {
   width: 130px;
+
   height: 50px;
+
   background: transparent;
+
   border: 2px solid #ccc;
+
   /* outline:đường viền bao quanh phần tử */
+
   outline: none;
+
   border-radius: 6px;
+
   font-size: 1.1em;
+
   font-weight: bold;
+
   margin-left: 40px;
+
   transition: 0.5s;
+
   color: #2b9474;
+
   cursor: pointer;
+
   position: relative;
 }
+
 .navigation .btnShoppingCart:hover {
   background: #2b9474;
+
   color: #fff;
 }
+
 .countProduct {
   color: #fff;
+
   position: absolute;
+
   width: 20px;
+
   height: 20px;
+
   border: 2px solid red;
+
   border-radius: 50%;
+
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   background: red;
+
   right: -10px;
+
   top: -10px;
 }
+
 .productsList {
   position: absolute;
-  left: 30vw;
-  width: 525px;
+  top: 100%;
+  width: 100%;
+
   height: 400px;
+
   border: 1px solid #ccc;
+
   background: #fff;
+
   margin-top: 5px;
+
   border-radius: 30px;
+
   overflow-y: scroll;
+
   overflow-x: hidden;
+}
+.searchBox {
+  position: relative; /* Giữ nguyên để làm mốc cho list xổ xuống */
+
+  /* SỬA: Đừng để 90%, hãy set cứng kích thước bạn muốn (bằng kích thước input cũ) */
+  width: 500px;
+
+  height: 50px;
+
+  /* SỬA: Bỏ margin auto đi, chỉ margin trái phải nếu cần */
+  margin: 0 20px;
+
+  display: flex;
+
+  align-items: center;
 }
 .productItem {
   width: 100%;
+
   height: 100px;
+
   display: flex;
 
   margin-left: 10px;
+
   margin-top: 10px;
+
   border-bottom: 1px solid #ccc;
+
   cursor: pointer;
 }
+
 .productItem:hover {
   background: #dfdddd;
 }
 
 .image {
   height: 100%;
+
   width: 60px;
+
   overflow: hidden;
+
   display: inline-block;
 }
+
 .image img {
   width: 100%;
+
   height: 100%;
+
   object-fit: contain;
 }
+
 .description p {
   font-size: 1.5rem;
+
   margin-left: 20px;
 }
+
 .description .productName {
   margin-top: 20px;
 }
+
 .description .cost {
   font-weight: bold;
 }
+
 .customerIcon {
   width: 50px;
+
   height: 50px;
+
   background: transparent;
+
   border: none;
+
   outline: none;
+
   font-size: 1.5rem;
+
   color: #2b9474;
+
   margin-left: 20px;
+
   cursor: pointer;
 }
+
 .customerIcon:hover {
   background: #2b9474;
+
   color: #fff;
 }
 
 @media (max-width: 768px) {
   header {
-    height: auto;
+    height: auto; /* Chiều cao tự do để chứa nội dung xuống dòng */
+    flex-direction: column; /* Xếp dọc các phần tử (nếu logo nằm ngoài nav) */
     padding: 10px;
-    flex-direction: column;
-    position: relative; /* Fixed header on mobile might take too much space */
   }
 
+  /* Logo: Đưa về vị trí bình thường (không tuyệt đối nữa) để đẩy nội dung khác xuống */
   .logo {
     position: relative;
     left: 0;
     margin-bottom: 10px;
+    width: 80px;
+    height: 80px;
+    align-self: center; /* Căn giữa logo */
+  }
+
+  /* Navigation: Cho phép rớt dòng */
+  .navigation {
+    width: 100%;
+    flex-wrap: wrap; /* Cho phép các phần tử rớt xuống dòng */
     justify-content: center;
   }
 
-  .navigation a {
-    margin-left: 10px;
-    font-size: 1rem;
+  /* Ẩn bớt text menu "Contact", "Product" cho đỡ chật (hoặc làm menu hamburger sau này) */
+  .navigation > a {
+    display: none;
+    /* Nếu muốn hiện thì dùng: font-size: 0.9rem; margin: 0 10px; */
   }
 
-  .navigation .find-product {
-    width: 90%;
-    margin-left: 0;
-    margin-top: 10px;
+  /* Thanh tìm kiếm: Chiếm dòng riêng và full màn hình */
+  .searchBox {
+    order: 3; /* Đẩy xuống vị trí thứ 3 (dưới cùng) */
+    width: 100%; /* Full chiều rộng màn hình */
+    margin: 10px 0 0 0; /* Cách bên trên 1 chút */
   }
 
+  /* Nút Login / Giỏ hàng / Icon User */
   .navigation .btnLogin-popup,
   .navigation .btnShoppingCart {
-    width: 100px;
-    margin-left: 10px;
-    font-size: 0.9em;
+    margin: 5px; /* Cách đều nhau */
+    flex-grow: 1; /* Tự giãn đều ra cho đẹp */
+    font-size: 0.8rem; /* Chữ nhỏ lại */
+    height: 35px;
   }
 
+  .customerIcon {
+    margin-left: 10px;
+  }
+
+  /* Ẩn hoặc chỉnh lại dropdown Product vì text menu Product đã bị ẩn */
   .list-product {
-    left: 5%;
-    width: 90%;
-    z-index: 100;
+    display: none;
   }
 }

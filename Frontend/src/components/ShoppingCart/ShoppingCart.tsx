@@ -1,17 +1,7 @@
 import styles from "./ShoppingCart.module.css";
 import { useContext, useEffect, useState } from "react";
 import { paymentPerProductContext } from "../useContext/PaymentPerProduct";
-
-interface CartItem {
-  id: number;
-  productName: string;
-  cost: number;
-  status: boolean;
-  img: string;
-  productDesc: string;
-  quantity: number;
-  [key: string]: unknown;
-}
+import { type IProduct } from "../../types/product";
 
 const TrashIcon = () => (
   <svg
@@ -56,16 +46,19 @@ const ChevronRight = () => (
 
 const ShoppingCart: React.FC = () => {
   // Dữ liệu giả lập
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+  const [cartItems, setCartItems] = useState<IProduct[]>(() => {
     const stored = localStorage.getItem("shoppingCart");
     return stored ? JSON.parse(stored) : [];
   });
   const [isProduct, setIsProduct] = useState<boolean>(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const priceNumber = (price: string) => {
+    return Number(price.replace(/\D/g, ""));
+  };
 
   const handleChangeQuantity = (id: number, count: number) => {
     const newItems = cartItems.map((item) => {
-      if (item.id === id && item.quantity + count >= 1) {
+      if (Number(item.SKU) === id && item.quantity + count >= 1) {
         return { ...item, quantity: item.quantity + count };
       }
       return item;
@@ -82,16 +75,16 @@ const ShoppingCart: React.FC = () => {
 
   // Tính tổng từ `cartItems`
   const totalAmount: number = cartItems.reduce(
-    (sum: number, item: CartItem) => {
-      const cost = Number(item.cost) || 0;
+    (sum: number, item: IProduct) => {
+      const cost = priceNumber(item.Price) || 0;
       const qty = Number(item.quantity) || 0;
       return sum + cost * qty;
     },
     0
   );
 
-  const removeItemByX = (valueA: number): CartItem[] => {
-    const newItems = cartItems.filter((item) => item.id !== valueA);
+  const removeItemByX = (valueA: number): IProduct[] => {
+    const newItems = cartItems.filter((item) => Number(item.SKU) !== valueA);
     // Cập nhật state và localStorage ngay lập tức
     setCartItems(newItems);
     try {
@@ -153,8 +146,8 @@ const ShoppingCart: React.FC = () => {
           </div>
 
           {/* Product Item Row */}
-          {cartItems.map((item: CartItem) => (
-            <div key={item.id}>
+          {cartItems.map((item: IProduct) => (
+            <div key={item.SKU}>
               <div className={styles.cartItem}>
                 <div className={styles.colCheckbox}>
                   <input
@@ -166,7 +159,7 @@ const ShoppingCart: React.FC = () => {
 
                 <div className={`${styles.colProduct} ${styles.productInfo}`}>
                   <img
-                    src={item.img}
+                    src={item.ImageURL}
                     alt="Product"
                     className={styles.productImg}
                   />
@@ -174,13 +167,16 @@ const ShoppingCart: React.FC = () => {
                     <span className={styles.flashSaleBadge}>
                       <LightningIcon /> Flash sale giá sốc
                     </span>
-                    <div className={styles.productName}>{item.productName}</div>
+                    <div className={styles.productName}>{item.ProductName}</div>
                   </div>
                 </div>
 
                 <div className={styles.colPrice}>
                   <span className={styles.currentPrice}>
-                    {(item.cost * item.quantity).toLocaleString("vi-VN")}đ
+                    {(priceNumber(item.Price) * item.quantity).toLocaleString(
+                      "vi-VN"
+                    )}
+                    đ
                   </span>
                 </div>
 
@@ -188,7 +184,7 @@ const ShoppingCart: React.FC = () => {
                   <div className={styles.qtyGroup}>
                     <button
                       className={styles.qtyBtn}
-                      onClick={() => handleChangeQuantity(item.id, -1)}
+                      onClick={() => handleChangeQuantity(Number(item.SKU), -1)}
                     >
                       -
                     </button>
@@ -200,7 +196,7 @@ const ShoppingCart: React.FC = () => {
                     />
                     <button
                       className={styles.qtyBtn}
-                      onClick={() => handleChangeQuantity(item.id, 1)}
+                      onClick={() => handleChangeQuantity(Number(item.SKU), 1)}
                     >
                       +
                     </button>
@@ -218,7 +214,7 @@ const ShoppingCart: React.FC = () => {
                   <button
                     className={styles.deleteBtn}
                     onClick={() => {
-                      removeItemByX(item.id);
+                      removeItemByX(Number(item.SKU));
                     }}
                   >
                     <TrashIcon />

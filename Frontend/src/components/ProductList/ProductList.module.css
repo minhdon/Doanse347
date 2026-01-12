@@ -122,7 +122,7 @@ button:hover {
     height: auto;
     gap: 10px;
   }
-  
+
   .component {
     width: 100%;
     height: auto;
@@ -132,14 +132,14 @@ button:hover {
   .component img {
     height: 120px;
   }
-  
+
   .price {
     position: relative;
     top: auto;
     left: auto;
     margin-top: 10px;
   }
-  
+
   .button {
     position: relative;
     top: auto;

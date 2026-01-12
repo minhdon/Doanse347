@@ -5,17 +5,7 @@ import {
   syncProvincesToStorage,
   type Province,
 } from "../CallApi/CallApiLocation";
-
-interface CartItem {
-  id: number;
-  productName: string;
-  cost: number;
-  status: boolean;
-  img: string;
-  productDesc: string;
-  quantity: number;
-  [key: string]: unknown;
-}
+import type { IProduct } from "../../types/product";
 
 // ... (Giữ nguyên phần SVG Icon cũ) ...
 const UserIcon = () => (
@@ -51,6 +41,9 @@ const ChevronRight = () => (
     <path d="M9 18l6-6-6-6" />
   </svg>
 );
+interface IProps extends IProduct {
+  quantity: number;
+}
 
 const CustomerInfo: React.FC = () => {
   // --- 1. State quản lý dữ liệu ---
@@ -86,7 +79,7 @@ const CustomerInfo: React.FC = () => {
   const phoneRegex = /^(?:\+84|0)\d{8,10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const [cartItems] = useState<CartItem[]>(() => {
+  const [cartItems] = useState<IProps[]>(() => {
     const stored = localStorage.getItem("shoppingCart");
     return stored ? JSON.parse(stored) : [];
   });
@@ -138,15 +131,16 @@ const CustomerInfo: React.FC = () => {
   ]);
 
   // --- Helper Functions ---
+  const priceNumber = (price: string) => {
+    return Number(price.replace(/\D/g, ""));
+  };
 
-  const totalAmount: number = cartItems.reduce(
-    (sum: number, item: CartItem) => {
-      const cost = Number(item.cost) || 0;
-      const qty = Number(item.quantity) || 0;
-      return sum + cost * qty;
-    },
-    0
-  );
+  const totalAmount: number = cartItems.reduce((sum: number, item: IProps) => {
+    const cost = priceNumber(item.Price) || 0;
+    const qty = Number(item.quantity) || 1;
+
+    return sum + cost * qty;
+  }, 0);
 
   const validateSenderPhone = (value: string) => {
     if (value.trim() === "") {

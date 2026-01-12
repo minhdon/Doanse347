@@ -189,6 +189,28 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 /* Responsive cho màn hình nhỏ */
+.value {
+  /* Quan trọng: Bỏ nền và viền */
+  background-color: transparent;
+  border: none;
+  outline: none; /* Bỏ viền xanh (focus ring) khi click chuột vào */
+
+  /* Căn chỉnh kích thước và chữ */
+  width: 100%; /* Chiếm hết chiều ngang của khung chứa */
+  padding: 0; /* Bỏ padding mặc định để chữ thẳng hàng */
+  margin-top: 4px; /* Tạo khoảng cách nhỏ với label phía trên nếu cần */
+
+  /* Style cho chữ nhập vào (tùy chỉnh theo design của bạn) */
+  font-size: 16px;
+  font-weight: 500;
+  color: #333; /* Màu chữ (ví dụ màu đen xám) */
+  font-family: inherit; /* Đồng bộ font chữ với cả trang */
+}
+
+/* (Tùy chọn) Thêm hiệu ứng gạch chân mờ khi người dùng click vào để biết đang nhập */
+.value:focus {
+  border-bottom: 1px solid #ccc; /* Chỉ hiện gạch chân mờ khi nhập */
+}
 @media (max-width: 640px) {
   .header {
     flex-direction: column;

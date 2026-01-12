@@ -16,7 +16,7 @@ export const Sort = () => {
       <div className={styles["sort-header"]}>
         <span>
           Hiển thị {indexContext.CountIndex + 1} - {indexContext.CountIndex + 8}{" "}
-          trên 104 sản phẩm
+          trên 500 sản phẩm
         </span>
         <label>
           Sắp xếp theo:

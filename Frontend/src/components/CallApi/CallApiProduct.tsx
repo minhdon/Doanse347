@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 
-const API_URL = "http://127.0.0.1:8000/?format=json";
+const API_URL = "http://127.0.0.1:5000/api/data";
 
 // Export interface để File hiển thị có thể dùng lại
 export interface ApiData {
-  id: number;
-  productName: string;
-  cost: number;
-  status: boolean;
-  img: string;
-  productDesc: string;
-  quantity?: number;
+  Brand: string;
+  Description: string;
+  HowToUse: string;
+  Ingredient: string;
+  ImageURL: string;
+  Manufacturer: string;
+  Note: string;
+  Preserver: string;
+  Price: string;
+  ProductName: string;
+  SKU: string;
+  SideEffect: string;
+  Unit: string;
+  UnitID: string;
+  Uses: string;
 }
 
 export const useProductFetcher = () => {

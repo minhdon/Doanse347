@@ -3,21 +3,9 @@ import styles from "./DetailProduct.module.css";
 import { useSearchParams } from "react-router";
 
 import { type ApiData } from "../CallApi/CallApiProduct";
-interface Product {
-  id: number;
-  productName: string;
-  cost: number;
-  img: string;
-  productDesc: string;
-  manufacturerID: string;
-  typeID: string;
-  status: boolean;
-  wareHouseID: string;
-  quantity: number;
-  [key: string]: unknown;
-}
+import type { IProduct } from "../../types/product";
 
-interface CartItem extends ApiData {
+interface CartItem extends IProduct {
   quantity: number;
 }
 
@@ -76,8 +64,7 @@ const LightningIcon = () => (
 );
 
 const ProductDetail: React.FC = () => {
-  const [quantity, setQuantity] = useState(1);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<IProduct[]>([]);
   const [search] = useSearchParams();
   const productID = search.get("productId");
   useEffect(() => {
@@ -89,13 +76,13 @@ const ProductDetail: React.FC = () => {
   console.log(allProducts);
   const selectedProduct = useMemo(() => {
     if (!allProducts || allProducts.length === 0) return null;
-    return allProducts.find((item) => item.id == Number(productID));
+    return allProducts.find((item) => Number(item.SKU) == Number(productID));
   }, [allProducts, productID]);
   const handleAddToCart = (item: ApiData) => {
     const cartData = localStorage.getItem("shoppingCart");
     const cartItems: CartItem[] = cartData ? JSON.parse(cartData) : [];
     const existingItemIndex = cartItems.findIndex(
-      (cartItem) => String(cartItem.id) === String(item.id)
+      (cartItem) => String(cartItem.SKU) === String(item.SKU)
     );
     if (existingItemIndex < 0) {
       const newItem: CartItem = { ...item, quantity: 1 };
@@ -112,12 +99,12 @@ const ProductDetail: React.FC = () => {
         <div className={styles.leftColumn}>
           <div className={styles.mainImageContainer}>
             <img
-              src={selectedProduct?.img}
+              src={selectedProduct?.ImageURL}
               alt="Orihiro Fish Oil"
               className={styles.mainImage}
             />
             <img
-              src={selectedProduct?.img}
+              src={selectedProduct?.ImageURL}
               alt="Chính hãng"
               className={styles.badge}
             />
@@ -131,7 +118,7 @@ const ProductDetail: React.FC = () => {
                 }`}
               >
                 <img
-                  src={selectedProduct?.img}
+                  src={selectedProduct?.ImageURL}
                   alt="Thumbnail"
                   className={styles.galleryImg}
                 />
@@ -142,11 +129,11 @@ const ProductDetail: React.FC = () => {
 
         {/* Cột phải: Thông tin */}
         <div className={styles.rightColumn}>
-          <div className={styles.brand}>Thương hiệu: ORIHIRO</div>
-          <h1 className={styles.title}>{selectedProduct?.productName}</h1>
+          <div className={styles.brand}>{selectedProduct?.Brand}</div>
+          <h1 className={styles.title}>{selectedProduct?.ProductName}</h1>
 
           <div className={styles.metaInfo}>
-            <span className={styles.sku}>00039910</span>
+            <span className={styles.sku}>{selectedProduct?.SKU}</span>
             <div className={styles.rating}>
               <span>4.9</span>
               <StarIcon />
@@ -179,12 +166,9 @@ const ProductDetail: React.FC = () => {
           <div className={styles.priceContainer}>
             <div className={styles.priceRow}>
               <span className={styles.currentPrice}>
-                {new Intl.NumberFormat("vi-VN").format(
-                  Number(selectedProduct?.cost)
-                )}
-                đ
+                {selectedProduct?.Price}
               </span>
-              <span className={styles.unit}>/ Hộp</span>
+              <span className={styles.unit}>/ {selectedProduct?.Unit}</span>
             </div>
 
             <p style={{ fontSize: "12px", color: "#1d48ba", marginTop: "5px" }}>
@@ -196,14 +180,9 @@ const ProductDetail: React.FC = () => {
           <div className={styles.specsContainer}>
             <div className={styles.specRow}>
               <span className={styles.specLabel}>Chọn đơn vị tính</span>
-              <div className={styles.unitTag}>Hộp</div>
+              <div className={styles.unitTag}>{selectedProduct?.Unit}</div>
             </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Danh mục</span>
-              <span className={`${styles.specValue} ${styles.link}`}>
-                Dầu cá, Omega 3, DHA
-              </span>
-            </div>
+
             <div className={styles.specRow}>
               <span className={styles.specLabel}>Số đăng ký</span>
               <span className={styles.specValue}>9461/2021/ĐKSP</span>
@@ -214,31 +193,34 @@ const ProductDetail: React.FC = () => {
                 Xem giấy công bố sản phẩm <CheckShieldIcon />
               </span>
             </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Dạng bào chế</span>
-              <span className={styles.specValue}>Viên nang mềm</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Quy cách</span>
-              <span className={styles.specValue}>Hộp 180 Viên</span>
-            </div>
+
             <div className={styles.specRow}>
               <span className={styles.specLabel}>Xuất xứ thương hiệu</span>
-              <span className={styles.specValue}>Nhật Bản</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Nhà sản xuất</span>
               <span className={styles.specValue}>
-                AFC - HD AMS LIFE SCIENCE CO., LTD.
+                {selectedProduct?.Manufacturer}
               </span>
             </div>
             <div className={styles.specRow}>
+              <span className={styles.specLabel}>Nhà sản xuất</span>
+              <span className={styles.specValue}>{selectedProduct?.Brand}</span>
+            </div>
+            <div className={styles.specRow}>
               <span className={styles.specLabel}>Nước sản xuất</span>
-              <span className={styles.specValue}>Nhật Bản</span>
+              <span className={styles.specValue}>
+                {selectedProduct?.Manufacturer}
+              </span>
             </div>
             <div className={styles.specRow}>
               <span className={styles.specLabel}>Thành phần</span>
-              <span className={styles.specValue}>Dầu cá</span>
+              <span className={styles.specValue}>
+                {selectedProduct?.Ingredient}
+              </span>
+            </div>
+            <div className={styles.specRow}>
+              <span className={styles.specLabel}>Mô tả</span>
+              <span className={styles.specValue}>
+                {selectedProduct?.Description}
+              </span>
             </div>
           </div>
 
@@ -285,7 +267,7 @@ const ProductDetail: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.specRow} style={{ alignItems: "center" }}>
+          {/* <div className={styles.specRow} style={{ alignItems: "center" }}>
             <span className={styles.specLabel}>Chọn số lượng</span>
             <div className={styles.quantitySelector}>
               <button
@@ -307,7 +289,7 @@ const ProductDetail: React.FC = () => {
                 +
               </button>
             </div>
-          </div>
+          </div> */}
 
           <div className={styles.buttonGroup}>
             <button

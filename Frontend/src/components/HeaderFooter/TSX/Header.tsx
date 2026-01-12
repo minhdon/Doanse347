@@ -7,13 +7,21 @@ import { useNavigate } from "react-router";
 import { createSearchParams } from "react-router";
 
 interface Product {
-  id: number;
-
-  productName: string;
-
-  img: string;
-
-  cost: number;
+  Brand: string;
+  Description: string;
+  HowToUse: string;
+  Ingredient: string;
+  ImageURL: string;
+  Manufacturer: string;
+  Note: string;
+  Preserver: string;
+  Price: string;
+  ProductName: string;
+  SKU: string;
+  SideEffect: string;
+  Unit: string;
+  UnitID: string;
+  Uses: string;
 
   [key: string]: unknown; // Cho phép các trường khác nếu có
 }
@@ -189,30 +197,27 @@ export const Header = () => {
                 {productsData
 
                   .filter((product) =>
-                    product.productName.toLowerCase().includes(valueOfFind)
+                    product.ProductName.toLowerCase().includes(valueOfFind)
                   )
 
                   .map((item) => (
                     <div
                       className={styles.productItem}
-                      onMouseDown={() => toDetailProduct(item.id)}
+                      onMouseDown={() => toDetailProduct(Number(item.SKU))}
                     >
                       <div className={styles.image}>
-                        <img src={item.img} alt="" />
+                        <img src={item.ImageURL} alt="" />
                       </div>
 
                       <div className={styles.description}>
                         <p className={styles.productName}>
                           {" "}
-                          {item.productName}
+                          {item.ProductName}
                         </p>
 
                         <br />
 
-                        <p className={styles.cost}>
-                          {" "}
-                          {new Intl.NumberFormat("vi-VN").format(item.cost)}đ
-                        </p>
+                        <p className={styles.cost}> {item.Price}</p>
                       </div>
                     </div>
                   ))}

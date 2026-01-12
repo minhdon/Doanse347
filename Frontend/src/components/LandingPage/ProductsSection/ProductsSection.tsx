@@ -72,11 +72,11 @@ const ProductsSection = () => {
           <div className={styles.carousel} ref={emblaRef}>
             <div className={styles.carouselContainer}>
               {top8Items.map((product: ApiData) => (
-                <div key={product.id} className={styles.slide}>
+                <div key={product.SKU} className={styles.slide}>
                   <div className={styles.productCard}>
                     <div className={styles.imageWrapper}>
                       <img
-                        src={product.img}
+                        src={product.ImageURL}
                         alt=""
                         style={{
                           objectFit: "contain",
@@ -92,15 +92,12 @@ const ProductsSection = () => {
                     </div>
                     <div className={styles.productInfo}>
                       <h3 className={styles.productName}>
-                        {product.productName}
+                        {product.ProductName}
                       </h3>
-                      <p className={styles.productPrice}>
-                        {" "}
-                        {new Intl.NumberFormat("vi-VN").format(product.cost)}đ
-                      </p>
+                      <p className={styles.productPrice}> {product.Price}</p>
                       <button
                         className={styles.viewBtn}
-                        onClick={() => toDetailProduct(product.id)}
+                        onClick={() => toDetailProduct(Number(product.SKU))}
                       >
                         Xem chi tiết
                       </button>

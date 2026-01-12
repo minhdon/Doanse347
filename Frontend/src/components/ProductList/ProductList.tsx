@@ -1,5 +1,10 @@
 import React, { useState, useContext, useMemo, useEffect } from "react";
-import { useNavigate, createSearchParams, useSearchParams } from "react-router";
+import {
+  useNavigate,
+  createSearchParams,
+  useSearchParams,
+  useLocation,
+} from "react-router";
 import { useProductFetcher, type ApiData } from "../CallApi/CallApiProduct";
 
 import { SortContext } from "../useContext/priceSortContext";
@@ -18,32 +23,81 @@ const DataFetcher: React.FC = () => {
   const sortContext = useContext(SortContext);
   const indexContext = useContext(IndexContext);
 
+  const { hash } = useLocation();
+  const hashValue = useMemo(() => {
+    if (!hash) return;
+    const textWithoutHash = hash.replace("#", "");
+    return decodeURIComponent(textWithoutHash);
+  }, [hash]);
+  console.log("Hash value:", hashValue);
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [currentPage, setCurrentPage] = useState(1);
   const maxPriceQuery = searchParams.get("maxPrice");
   const minPriceQuery = searchParams.get("minPrice");
+  const countryQuery = searchParams.getAll("country");
+  const brandQuery = searchParams.getAll("brand");
+  const priceNumber = (price: string) => {
+    return Number(price.replace(/\D/g, ""));
+  };
+  console.log(new Set(countryQuery));
 
   const sortedData = useMemo(() => {
     if (!data) return [];
     let dataCopy = [...data];
+    if (brandQuery.length > 0) {
+      const brandSet = new Set(brandQuery);
+      if (brandSet.size > 0) {
+        dataCopy = dataCopy.filter((item) => brandSet.has(item.Brand));
+      }
+    }
+    if (hashValue) {
+      if (hashValue === "thuốc-theo-đơn") {
+        dataCopy = dataCopy.filter((item) => item.Price == "Liên hệ");
+      } else if (hashValue === "thuốc-không-theo-đơn") {
+        dataCopy = dataCopy.filter((item) => item.Price != "Liên hệ");
+      }
+    }
+    if (countryQuery.length > 0) {
+      const countrySet = new Set(countryQuery);
+
+      if (countrySet.size > 0) {
+        dataCopy = dataCopy.filter((item) => countrySet.has(item.Manufacturer));
+      }
+    }
     if (maxPriceQuery || minPriceQuery) {
       const maxPrice = Number(maxPriceQuery) || 1e9;
       const minPrice = Number(minPriceQuery) || 0;
+
       dataCopy = dataCopy.filter(
-        (item) => item.cost >= minPrice && item.cost <= maxPrice
+        (item) =>
+          priceNumber(item.Price) >= minPrice &&
+          priceNumber(item.Price) <= maxPrice
       );
     }
     switch (sortContext.typeSort) {
       case "lowToHigh":
-        return dataCopy.sort((a, b) => a.cost - b.cost);
+        return dataCopy.sort(
+          (a, b) => priceNumber(a.Price) - priceNumber(b.Price)
+        );
       case "highToLow":
-        return dataCopy.sort((a, b) => b.cost - a.cost);
+        return dataCopy.sort(
+          (a, b) => priceNumber(b.Price) - priceNumber(a.Price)
+        );
       default:
         return dataCopy;
     }
-  }, [data, sortContext.typeSort, maxPriceQuery, minPriceQuery]);
+  }, [
+    data,
+    sortContext.typeSort,
+    maxPriceQuery,
+    minPriceQuery,
+    countryQuery,
+    brandQuery,
+    hashValue,
+  ]);
   useEffect(() => {
     setCurrentPage(1);
   }, [maxPriceQuery, minPriceQuery]);
@@ -78,7 +132,7 @@ const DataFetcher: React.FC = () => {
     const cartData = localStorage.getItem("shoppingCart");
     const cartItems: CartItem[] = cartData ? JSON.parse(cartData) : [];
     const existingItemIndex = cartItems.findIndex(
-      (cartItem) => String(cartItem.id) === String(item.id)
+      (cartItem) => String(cartItem.SKU) === String(item.SKU)
     );
     if (existingItemIndex < 0) {
       const newItem: CartItem = { ...item, quantity: 1 };
@@ -101,17 +155,15 @@ const DataFetcher: React.FC = () => {
       <div className={styles.hero}>
         {currentProducts.map((item) => (
           <div
-            key={item.id}
+            key={item.SKU}
             className={styles.component}
-            onClick={() => toDetailProduct(item.id)}
+            onClick={() => toDetailProduct(Number(item.SKU))}
           >
-            <img src={item.img} alt={item.productName} />
+            <img src={item.ImageURL} alt={item.ProductName} />
             <div className={styles.desc}>
-              {item.productName} <span>hỗ trợ </span> {item.productDesc}
+              {item.ProductName} <span>hỗ trợ </span> {item.Description}
             </div>
-            <p className={styles.price}>
-              {new Intl.NumberFormat("vi-VN").format(item.cost)}đ
-            </p>
+            <p className={styles.price}>{item.Price}</p>
             <button
               className={styles.button}
               onClick={(e) => {
@@ -130,17 +182,34 @@ const DataFetcher: React.FC = () => {
       {totalPages > 1 && (
         <nav className={styles.paginationNav}>
           <ul>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <li key={index + 1}>
-                <button
-                  onClick={() => handlePageChange(index + 1)}
-                  className={currentPage === index + 1 ? styles.activePage : ""}
-                >
-                  {index + 1}
-                </button>
-              </li>
-            ))}
+            {Array.from(
+              { length: totalPages },
+              (_, index) =>
+                index < 10 && (
+                  <li key={index + 1}>
+                    <button
+                      onClick={() => handlePageChange(index + 1)}
+                      className={
+                        currentPage === index + 1 ? styles.activePage : ""
+                      }
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                )
+            )}
           </ul>
+          {totalPages > 9 && (
+            <button
+              style={{
+                marginLeft: "8px",
+                cursor: "default",
+                pointerEvents: "none",
+              }}
+            >
+              ...
+            </button>
+          )}
         </nav>
       )}
     </>

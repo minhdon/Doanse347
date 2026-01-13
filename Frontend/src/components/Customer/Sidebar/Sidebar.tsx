@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./Sidebar.module.css";
-
+import { useLocation } from "react-router";
 // --- Icons Inline ---
 const UserIcon = () => (
   <svg
@@ -85,9 +85,16 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   // State quản lý đóng mở (mặc định là mở như hình)
   const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("info");
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const { pathname } = useLocation(); // Ví dụ: /admin/products/edit
+
+  // Logic: "Lấy tất cả những gì sau dấu / thứ 2"
+  const subPath = pathname.split("/").slice(2).join("/");
+  // -> Kết quả: "products/edit"
+
+  const [activeItem] = useState(subPath || "info");
 
   return (
     <div className={styles.container}>
@@ -115,7 +122,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             className={`${styles.menuItem} ${
               activeItem === "info" ? styles.active : ""
             }`}
-            onClick={() => setActiveItem("info")}
+            onClick={() => {
+              window.location.href = "/customer/info";
+            }}
           >
             <UserIcon />
             <span>Thông tin khách hàng</span>
@@ -125,7 +134,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             className={`${styles.menuItem} ${
               activeItem === "history" ? styles.active : ""
             }`}
-            onClick={() => setActiveItem("history")}
+            onClick={() => {
+              window.location.href = "/customer/history";
+            }}
           >
             <BagIcon />
             <span>Lịch sử mua hàng</span>

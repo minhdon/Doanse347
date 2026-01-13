@@ -8,6 +8,7 @@ import { SortProvider } from "./components/useContext/priceSortContext.tsx";
 import { IndexProvider } from "./components/useContext/IndexProductContext.tsx";
 import { PaymentPerProductProvider } from "./components/useContext/PaymentPerProduct.tsx";
 import { IsInfoProvider } from "./components/useContext/checkInfoContext.tsx";
+import { SelectedProductProvider } from "./components/useContext/SelectedProduct.tsx";
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <StrictMode>
@@ -15,7 +16,10 @@ createRoot(document.getElementById("root")!).render(
         <SortProvider>
           <IndexProvider>
             <IsInfoProvider>
-              <App />
+              <SelectedProductProvider>
+                {" "}
+                <App />
+              </SelectedProductProvider>
             </IsInfoProvider>
           </IndexProvider>
         </SortProvider>

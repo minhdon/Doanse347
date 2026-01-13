@@ -11,7 +11,7 @@ export interface ApiData {
   ImageURL: string;
   Manufacturer: string;
   Note: string;
-  Preserver: string;
+  Preserve: string;
   Price: string;
   ProductName: string;
   SKU: string;
@@ -66,12 +66,6 @@ export const useProductFetcher = () => {
         setData(finalData);
 
         // Lưu mảng chuẩn xuống Local Storage
-        try {
-          localStorage.setItem("products", JSON.stringify(finalData));
-          console.log("Đã lưu data xuống LocalStorage");
-        } catch (storageErr) {
-          console.warn("Lỗi lưu storage (có thể do quota):", storageErr);
-        }
       } catch (e) {
         console.error("Error fetching data:", e);
         if (e instanceof TypeError && e.message.includes("fetch")) {

@@ -1,6 +1,4 @@
 header {
-  position: fixed;
-
   top: 0;
 
   left: 0;
@@ -28,10 +26,6 @@ header {
   border-radius: 10px;
 
   transition: 0.5s;
-}
-
-.header-hidden {
-  top: -150px;
 }
 
 .logo {
@@ -145,6 +139,7 @@ header {
   transform: scaleX(1);
 
   transition: 0.5s;
+  z-index: 100;
 }
 
 .list-product a {
@@ -301,6 +296,7 @@ header {
   margin-top: 5px;
 
   border-radius: 30px;
+  z-index: 100;
 
   overflow-y: scroll;
 
@@ -324,7 +320,7 @@ header {
 .productItem {
   width: 100%;
 
-  height: 100px;
+  height: 110px;
 
   display: flex;
 

@@ -18,6 +18,7 @@ import PaymentPage from "./pages/TSX/PaymentPage";
 
 import CheckoutPage from "./pages/TSX/Checkout";
 import CustomerPage from "./pages/TSX/CustomerPage";
+import PurchaseHistoryPage from "./pages/TSX/PurchaseHistoryPage";
 
 function App() {
   const location = useLocation();
@@ -43,7 +44,11 @@ function App() {
           <Route path="/ChangePass" element={<ChangePassPage />}></Route>
           <Route path="/chat" element={<MedicineChat />}></Route>
           <Route path="/checkout" element={<CheckoutPage />}></Route>
-          <Route path="/customer" element={<CustomerPage />}></Route>
+          <Route path="/customer/info" element={<CustomerPage />}></Route>
+          <Route
+            path="/customer/history"
+            element={<PurchaseHistoryPage />}
+          ></Route>
         </Routes>
       </AnimatePresence>
     </>

@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useContext } from "react";
 import styles from "./DetailProduct.module.css";
 import { useSearchParams } from "react-router";
 
-import { type ApiData } from "../CallApi/CallApiProduct";
+import { useProductFetcher, type ApiData } from "../CallApi/CallApiProduct";
 import type { IProduct } from "../../types/product";
+import { SelectedProductContext } from "../useContext/SelectedProduct";
 
 interface CartItem extends IProduct {
   quantity: number;
@@ -64,20 +65,22 @@ const LightningIcon = () => (
 );
 
 const ProductDetail: React.FC = () => {
-  const [allProducts, setAllProducts] = useState<IProduct[]>([]);
+  const { data } = useProductFetcher();
+  const [allProducts, setAllProducts] = useState<ApiData[]>([]);
   const [search] = useSearchParams();
   const productID = search.get("productId");
+  const productContext = useContext(SelectedProductContext);
   useEffect(() => {
-    const tmp = localStorage.getItem("products");
-    if (tmp) {
-      setAllProducts(JSON.parse(tmp));
+    if (data) {
+      setAllProducts(data);
     }
-  }, []);
-  console.log(allProducts);
+  }, [data]);
+
   const selectedProduct = useMemo(() => {
     if (!allProducts || allProducts.length === 0) return null;
     return allProducts.find((item) => Number(item.SKU) == Number(productID));
   }, [allProducts, productID]);
+  productContext.ChangeSelectedProduct(selectedProduct as ApiData);
   const handleAddToCart = (item: ApiData) => {
     const cartData = localStorage.getItem("shoppingCart");
     const cartItems: CartItem[] = cartData ? JSON.parse(cartData) : [];
@@ -145,7 +148,7 @@ const ProductDetail: React.FC = () => {
             <span className={styles.link}>49 đánh giá</span>
             <span className={styles.link}>431 bình luận</span>
           </div>
-
+          {/* 
           <div className={styles.flashSaleBanner}>
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
               <img
@@ -161,7 +164,7 @@ const ProductDetail: React.FC = () => {
               <span className={styles.timerBox}>08</span>:
               <span className={styles.timerBox}>31</span>
             </div>
-          </div>
+          </div> */}
 
           <div className={styles.priceContainer}>
             <div className={styles.priceRow}>
@@ -171,27 +174,20 @@ const ProductDetail: React.FC = () => {
               <span className={styles.unit}>/ {selectedProduct?.Unit}</span>
             </div>
 
-            <p style={{ fontSize: "12px", color: "#1d48ba", marginTop: "5px" }}>
+            {/* <p style={{ fontSize: "12px", color: "#1d48ba", marginTop: "5px" }}>
               Lưu ý: Flash sale giá sốc chỉ áp dụng với số lượng & thời gian
               giới hạn <span className={styles.link}>xem chi tiết </span>
-            </p>
+            </p> */}
           </div>
 
           <div className={styles.specsContainer}>
             <div className={styles.specRow}>
-              <span className={styles.specLabel}>Chọn đơn vị tính</span>
+              <span className={styles.specLabel}>Đơn vị tính</span>
               <div className={styles.unitTag}>{selectedProduct?.Unit}</div>
             </div>
 
             <div className={styles.specRow}>
-              <span className={styles.specLabel}>Số đăng ký</span>
-              <span className={styles.specValue}>9461/2021/ĐKSP</span>
-            </div>
-            <div className={styles.specRow}>
               <span className={styles.specLabel}></span>
-              <span className={styles.link} style={{ fontSize: "13px" }}>
-                Xem giấy công bố sản phẩm <CheckShieldIcon />
-              </span>
             </div>
 
             <div className={styles.specRow}>

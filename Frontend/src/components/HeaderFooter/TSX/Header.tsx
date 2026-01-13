@@ -5,31 +5,12 @@ import styles from "../CSS/Header.module.css";
 import { useNavigate } from "react-router";
 
 import { createSearchParams } from "react-router";
-
-interface Product {
-  Brand: string;
-  Description: string;
-  HowToUse: string;
-  Ingredient: string;
-  ImageURL: string;
-  Manufacturer: string;
-  Note: string;
-  Preserver: string;
-  Price: string;
-  ProductName: string;
-  SKU: string;
-  SideEffect: string;
-  Unit: string;
-  UnitID: string;
-  Uses: string;
-
-  [key: string]: unknown; // Cho phép các trường khác nếu có
-}
+import { useProductFetcher, type ApiData } from "../../CallApi/CallApiProduct";
 
 export const Header = () => {
   const [valueOfFind, setValueOfFind] = useState<string>("");
 
-  const [productsData, setProductsData] = useState<Product[]>([]);
+  const [productsData, setProductsData] = useState<ApiData[]>([]);
 
   const [isFocus, setIsFocus] = useState(false);
 
@@ -37,29 +18,34 @@ export const Header = () => {
 
   const [isProductList, setIsProductList] = useState(false);
 
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  // const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
-  const lastScrollY = useRef(0);
+  // const lastScrollY = useRef(0);
 
   const productList = isProductList ? styles.active : "";
 
-  const headerHidden = isHeaderHidden ? styles["header-hidden"] : "";
+  // const headerHidden = isHeaderHidden ? styles["header-hidden"] : "";
 
   const data = localStorage.getItem("shoppingCart") || "[]";
 
   const ProductList = JSON.parse(data);
+  const { data: rawData } = useProductFetcher();
 
   useEffect(() => {
-    const tmp = localStorage.getItem("products");
-
-    if (tmp) {
-      try {
-        setProductsData(JSON.parse(tmp));
-      } catch (e) {
-        console.error("Loi", e);
-      }
-    }
+    // const tmp = localStorage.getItem("products");
+    // if (tmp) {
+    //   try {
+    //     setProductsData(JSON.parse(tmp));
+    //   } catch (e) {
+    //     console.error("Loi", e);
+    //   }
+    // }
   }, []);
+  useEffect(() => {
+    if (rawData) {
+      setProductsData(rawData);
+    }
+  }, [rawData]);
 
   const navigate = useNavigate();
 
@@ -97,36 +83,6 @@ export const Header = () => {
     }, 100);
   };
 
-  useEffect(() => {
-    if (isHeaderHidden) {
-      setIsFocus(false); // Tắt trạng thái focus (ẩn danh sách sản phẩm) của thanh tìm kiếm
-
-      // (Tùy chọn) Nếu bạn muốn con trỏ chuột cũng thoát khỏi ô input (không nhấp nháy nữa)
-
-      // thì cần thêm một bước dùng useRef (xem hướng dẫn nâng cao bên dưới)
-    }
-  }, [isHeaderHidden]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        setIsHeaderHidden(true);
-      } else if (currentScrollY < lastScrollY.current) {
-        setIsHeaderHidden(false);
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   const landingPageLink = () => {
     window.location.href = "/";
   };
@@ -143,7 +99,7 @@ export const Header = () => {
 
   return (
     <>
-      <header id="header" className={headerHidden}>
+      <header id="header" className={styles.header}>
         <div className={styles.logo}>
           <img
             src="/images/logo.png"
@@ -192,7 +148,7 @@ export const Header = () => {
               value={valueOfFind}
               onChange={(e) => handleSetValueOfFind(e.target.value)}
             />
-            {isFocus && (
+            {isFocus && rawData && (
               <section className={styles.productsList}>
                 {productsData
 
@@ -237,7 +193,7 @@ export const Header = () => {
           </button>
           <button
             className={styles.customerIcon}
-            onClick={() => (window.location.href = "/customer")}
+            onClick={() => (window.location.href = "/customer/info")}
           >
             <i className="fa-regular fa-user"></i>
           </button>

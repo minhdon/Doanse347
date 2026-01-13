@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Checkout.module.css";
+import type { IProduct } from "../../types/product";
 
 // ... (Giữ nguyên các phần khai báo Type và Interface ở trên) ...
 type PaymentMethod = "momo" | "bank";
-interface CartItem {
-  id: number;
-  productName: string;
-  cost: number;
-  status: boolean;
-  img: string;
-  productDesc: string;
-  quantity: number;
-  [key: string]: unknown;
-}
 
 const Checkout: React.FC = () => {
   const [method, setMethod] = useState<PaymentMethod>("momo");
@@ -20,14 +11,18 @@ const Checkout: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState<boolean>(false); // State quản lý Popup thành công
 
   // ... (Giữ nguyên logic giỏ hàng và đồng hồ đếm ngược) ...
-  const [cartItems] = useState<CartItem[]>(() => {
+  const [cartItems] = useState<IProduct[]>(() => {
     const stored = localStorage.getItem("shoppingCart");
     return stored ? JSON.parse(stored) : [];
   });
 
+  const priceNumber = (price: string) => {
+    return Number(price.replace(/\D/g, ""));
+  };
+
   const totalAmount: number = cartItems.reduce(
-    (sum: number, item: CartItem) => {
-      const cost = Number(item.cost) || 0;
+    (sum: number, item: IProduct) => {
+      const cost = priceNumber(item.Price) || 0;
       const qty = Number(item.quantity) || 0;
       return sum + cost * qty;
     },

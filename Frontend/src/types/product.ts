@@ -6,7 +6,7 @@ export interface IProduct {
   ImageURL: string;
   Manufacturer: string;
   Note: string;
-  Preserver: string;
+  Preserve: string;
   Price: string;
   ProductName: string;
   SKU: string;

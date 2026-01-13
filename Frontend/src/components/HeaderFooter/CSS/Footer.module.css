@@ -4,6 +4,7 @@
   display: flex;
   align-items: center;
   font-family: "roboto";
+  border-top: 1px solid #ccc;
 }
 .footer-logo {
   height: 100%;

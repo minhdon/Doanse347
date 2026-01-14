@@ -36,9 +36,9 @@ export const Footer = () => {
         <div className={styles["footer-something"]}>
           <div className={styles["about-us"]}>
             <h1>Về chúng tôi</h1>
-            <a href="#hero">Trang chủ</a>
+            <a href="/#hero">Trang chủ</a>
             <a href="#about">Tổng quan</a>
-            <a href="#why-choice-container">Hoạt động thường ngày</a>
+            <a href="/#activities">Hoạt động thường ngày</a>
             <a href="#certification">Chứng nhận GPP</a>
           </div>
 

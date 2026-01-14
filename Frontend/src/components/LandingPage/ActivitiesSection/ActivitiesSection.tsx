@@ -37,7 +37,7 @@ const activities = [
 
 const ActivitiesSection = () => {
   return (
-    <section className={styles.section}>
+    <section className={styles.section} id="activities">
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>Hoạt Động Nhà Thuốc</h2>

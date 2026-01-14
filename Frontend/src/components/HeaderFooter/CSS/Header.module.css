@@ -395,58 +395,113 @@ header {
   color: #fff;
 }
 
-@media (max-width: 768px) {
-  header {
-    height: auto; /* Chiều cao tự do để chứa nội dung xuống dòng */
-    flex-direction: column; /* Xếp dọc các phần tử (nếu logo nằm ngoài nav) */
-    padding: 10px;
+/* ================================================= */
+/* PHẦN THÊM MỚI: RESPONSIVE & MOBILE MENU           */
+/* ================================================= */
+
+/* 1. Nút Menu Burger (Mặc định ẩn trên Desktop) */
+.menuToggle {
+  display: none;
+  font-size: 2rem;
+  color: #2b9474;
+  cursor: pointer;
+  position: absolute;
+  right: 5%; /* Căn phải đối xứng với Logo */
+  z-index: 1001;
+}
+
+/* 2. Responsive cho màn hình dưới 991px (Tablet & Mobile) */
+@media (max-width: 1024px) {
+  /* Hiện nút menu */
+  .menuToggle {
+    display: block;
   }
 
-  /* Logo: Đưa về vị trí bình thường (không tuyệt đối nữa) để đẩy nội dung khác xuống */
-  .logo {
-    position: relative;
-    left: 0;
-    margin-bottom: 10px;
-    width: 80px;
-    height: 80px;
-    align-self: center; /* Căn giữa logo */
-  }
-
-  /* Navigation: Cho phép rớt dòng */
+  /* Biến Navigation thành Sidebar trượt từ phải sang */
   .navigation {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Giấu sang phải */
+    width: 100vw; /* Chiều rộng menu mobile */
+    height: 100vh;
+    background: #ffffff;
+    flex-direction: column; /* Xếp dọc các phần tử */
+    justify-content: flex-start;
+    padding-top: 80px; /* Chừa chỗ cho nút đóng */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: 0.4s ease;
+    align-items: flex-start; /* Căn lề trái cho nội dung */
+    z-index: 100;
+  }
+
+  /* Class active để mở menu (sẽ add bằng React) */
+  .navigation.active {
+    right: 0;
+  }
+
+  /* Chỉnh lại các Link trong menu */
+  .navigation a {
+    margin: 15px 30px; /* Tăng khoảng cách */
+    font-size: 1.2rem;
     width: 100%;
-    flex-wrap: wrap; /* Cho phép các phần tử rớt xuống dòng */
-    justify-content: center;
   }
 
-  /* Ẩn bớt text menu "Contact", "Product" cho đỡ chật (hoặc làm menu hamburger sau này) */
-  .navigation > a {
-    display: none;
-    /* Nếu muốn hiện thì dùng: font-size: 0.9rem; margin: 0 10px; */
-  }
-
-  /* Thanh tìm kiếm: Chiếm dòng riêng và full màn hình */
+  /* Sửa lại ô tìm kiếm (quan trọng vì cái cũ set cứng 500px) */
   .searchBox {
-    order: 3; /* Đẩy xuống vị trí thứ 3 (dưới cùng) */
-    width: 100%; /* Full chiều rộng màn hình */
-    margin: 10px 0 0 0; /* Cách bên trên 1 chút */
+    width: 90% !important; /* Đè lên width: 500px cũ */
+    margin: 20px auto !important; /* Căn giữa */
+    flex-direction: column;
+    height: auto;
   }
 
-  /* Nút Login / Giỏ hàng / Icon User */
+  .navigation .find-product {
+    width: 100%;
+  }
+
+  /* List sản phẩm dropdown (Tất cả sp, thuốc theo đơn...) */
+  .list-product {
+    position: relative; /* Không bay lơ lửng nữa */
+    left: 0 !important; /* Reset left cũ */
+    top: 0 !important;
+    width: 100% !important;
+    height: 200px;
+    margin-top: 0;
+    box-shadow: none;
+    background: #f9f9f9;
+    height: 0;
+    overflow: hidden;
+    transform: none !important; /* Bỏ scale cũ */
+    display: block; /* Hiện khối để animation height */
+    transition: 0.3s;
+  }
+
+  /* Khi hover hoặc click vào Product trên mobile */
+  .list-product.active {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+
+    transform: none !important;
+  }
+
+  /* Các nút Login/Giỏ hàng */
   .navigation .btnLogin-popup,
   .navigation .btnShoppingCart {
-    margin: 5px; /* Cách đều nhau */
-    flex-grow: 1; /* Tự giãn đều ra cho đẹp */
-    font-size: 0.8rem; /* Chữ nhỏ lại */
-    height: 35px;
+    margin-left: 30px;
+    margin-top: 10px;
+    width: 80%; /* Nút to ra cho dễ ấn */
   }
 
   .customerIcon {
-    margin-left: 10px;
+    margin-left: 30px;
+    margin-top: 20px;
   }
 
-  /* Ẩn hoặc chỉnh lại dropdown Product vì text menu Product đã bị ẩn */
-  .list-product {
-    display: none;
+  /* Kết quả tìm kiếm xổ xuống */
+  .productsList {
+    width: 100%;
+    position: relative; /* Để nằm dưới ô search thay vì đè lên các nút khác */
+    top: 0;
+    max-height: 300px;
   }
 }

@@ -19,6 +19,7 @@ import PaymentPage from "./pages/TSX/PaymentPage";
 import CheckoutPage from "./pages/TSX/Checkout";
 import CustomerPage from "./pages/TSX/CustomerPage";
 import PurchaseHistoryPage from "./pages/TSX/PurchaseHistoryPage";
+import EditInfoPage from "./pages/TSX/EditInfoPage";
 
 function App() {
   const location = useLocation();
@@ -45,6 +46,10 @@ function App() {
           <Route path="/chat" element={<MedicineChat />}></Route>
           <Route path="/checkout" element={<CheckoutPage />}></Route>
           <Route path="/customer/info" element={<CustomerPage />}></Route>
+          <Route
+            path="/customer/info/editInfo"
+            element={<EditInfoPage />}
+          ></Route>
           <Route
             path="/customer/history"
             element={<PurchaseHistoryPage />}

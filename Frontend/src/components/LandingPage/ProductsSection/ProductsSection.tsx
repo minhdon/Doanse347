@@ -9,14 +9,16 @@ const ProductsSection = () => {
   const rawData = localStorage.getItem("products");
   const productsData = rawData ? JSON.parse(rawData) : [];
   const top8Items = productsData.slice(0, 8);
-  console.log("Top 8 products:", top8Items);
   const navigate = useNavigate();
 
+  // Cấu hình Embla: slidesToScroll: 1 giúp trải nghiệm mượt mà trên mobile
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
-    slidesToScroll: 1,
+    slidesToScroll: 1, // Luôn scroll 1 item, an toàn nhất cho responsive
     align: "start",
+    containScroll: "trimSnaps", // Giúp không bị khoảng trắng ở cuối carousel
   });
+
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -34,8 +36,11 @@ const ProductsSection = () => {
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
+
+    // Lắng nghe sự kiện resize để update lại trạng thái nút bấm
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
+    emblaApi.on("resize", onSelect);
   }, [emblaApi, onSelect]);
 
   const scrollTo = useCallback(
@@ -77,24 +82,22 @@ const ProductsSection = () => {
                     <div className={styles.imageWrapper}>
                       <img
                         src={product.ImageURL}
-                        alt=""
+                        alt={product.ProductName}
                         style={{
                           objectFit: "contain",
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "#f9f9f9",
+                          width: "80%", // Giảm width ảnh chút để không bị sát lề
+                          height: "80%",
                         }}
                       />
-                      {/* <Pill size={48} color="#0066CC" /> */}
-                      {/* {product.badge && (
-                        <span className={styles.badge}>{product.badge}</span>
-                      )} */}
                     </div>
                     <div className={styles.productInfo}>
-                      <h3 className={styles.productName}>
+                      <h3
+                        className={styles.productName}
+                        title={product.ProductName}
+                      >
                         {product.ProductName}
                       </h3>
-                      <p className={styles.productPrice}> {product.Price}</p>
+                      <p className={styles.productPrice}>{product.Price}</p>
                       <button
                         className={styles.viewBtn}
                         onClick={() => toDetailProduct(Number(product.SKU))}
@@ -118,18 +121,22 @@ const ProductsSection = () => {
         </div>
 
         <div className={styles.dots}>
-          {Array.from({ length: Math.ceil(top8Items.length / 4) }).map(
-            (_, index) => (
-              <button
-                key={index}
-                className={`${styles.dot} ${
-                  selectedIndex === index ? styles.dotActive : ""
-                }`}
-                onClick={() => scrollTo(index)}
-              />
-            )
-          )}
+          {/* Sửa lại logic dots: Sử dụng scrollSnaps từ API thay vì tính toán thủ công */}
+          {emblaApi &&
+            emblaApi
+              .scrollSnapList()
+              .map((_, index) => (
+                <button
+                  key={index}
+                  className={`${styles.dot} ${
+                    selectedIndex === index ? styles.dotActive : ""
+                  }`}
+                  onClick={() => scrollTo(index)}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
         </div>
+
         <button
           className={styles.viewAllBtn}
           onClick={() => {

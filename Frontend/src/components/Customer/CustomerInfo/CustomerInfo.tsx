@@ -116,7 +116,7 @@ const CustomerInfo: React.FC = () => {
           <button
             className={styles.editButton}
             onClick={() => {
-              setIsEditing(true);
+              window.location.href = "/customer/info/editInfo";
             }}
           >
             <EditIcon />
@@ -126,7 +126,7 @@ const CustomerInfo: React.FC = () => {
       </div>
 
       {/* Card Thông tin */}
-      {isEditing == false && (
+      {
         <div className={styles.card}>
           {/* Avatar ở giữa */}
           <div className={styles.avatarContainer}>
@@ -194,79 +194,8 @@ const CustomerInfo: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      }
 
-      {isEditing && (
-        <div className={styles.card}>
-          {/* Avatar ở giữa */}
-          <div className={styles.avatarContainer}>
-            <div className={styles.avatar}>
-              <div className={styles.avatarIcon}>
-                <i className="fa-regular fa-user"></i>
-              </div>
-            </div>
-          </div>
-
-          {/* Danh sách các trường thông tin */}
-
-          {/* Họ và tên */}
-          <div className={styles.infoRow}>
-            <div className={styles.iconWrapper}>
-              <UserIcon />
-            </div>
-            <div className={styles.infoContent}>
-              <span className={styles.label}>Họ và tên</span>
-              <input className={styles.value} type="text" />
-            </div>
-          </div>
-
-          {/* Địa chỉ */}
-          <div className={styles.infoRow}>
-            <div className={styles.iconWrapper}>
-              <MapPinIcon />
-            </div>
-            <div className={styles.infoContent}>
-              <span className={styles.label}>Địa chỉ</span>
-              <input className={styles.value} type="text" />
-            </div>
-          </div>
-
-          {/* Số điện thoại */}
-          <div className={styles.infoRow}>
-            <div className={styles.iconWrapper}>
-              <PhoneIcon />
-            </div>
-            <div className={styles.infoContent}>
-              <span className={styles.label}>Số điện thoại</span>
-              <input className={styles.value} type="tel" />
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className={styles.infoRow}>
-            <div className={styles.iconWrapper}>
-              <MailIcon />
-            </div>
-            <div className={styles.infoContent}>
-              <span className={styles.label}>Email</span>
-              <input className={styles.value} type="email" />
-            </div>
-          </div>
-
-          {/* Ngày sinh */}
-          <div className={styles.infoRow}>
-            <div className={styles.iconWrapper}>
-              <CalendarIcon />
-            </div>
-            <div className={styles.infoContent}>
-              <span className={styles.label}>Ngày sinh</span>
-              {/* Lưu ý: Nếu customerData.dob là định dạng YYYY-MM-DD thì nên dùng type="date". 
-          Nếu là DD/MM/YYYY thì dùng type="text" */}
-              <input className={styles.value} type="text" />
-            </div>
-          </div>
-        </div>
-      )}
       <div className={styles.buttonGroup}>
         {/* Nút chính: Xác nhận (Nằm trên) */}
         {isEditing && (

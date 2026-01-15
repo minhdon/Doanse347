@@ -76,7 +76,7 @@
   font-size: 1.5rem;
 }
 .input-box input:focus ~ label,
-.input-box input:valid ~ label {
+.input-box input:not(:placeholder-shown) ~ label {
   top: -20px;
 }
 .section button {

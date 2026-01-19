@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API_URL = "http://127.0.0.1:5000/api/data";
+const API_URL = "https://apis-dtqv.onrender.com/api/data";
 
 // Export interface để File hiển thị có thể dùng lại
 export interface ApiData {
@@ -42,7 +42,7 @@ export const useProductFetcher = () => {
           throw new Error(
             `HTTP error! status: ${response.status} - ${
               errorText || response.statusText
-            }`
+            }`,
           );
         }
 
